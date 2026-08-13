@@ -1,3 +1,5 @@
+
+
 """
 graph/graph_builder.py
 
@@ -30,6 +32,42 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from parser.parser import FileParseResult, parse_repository  # noqa: E402
 
 logger = logging.getLogger(__name__)
+
+
+def _add_typed_edge(graph: nx.DiGraph, u: str, v: str, edge_type: str) -> None:
+    """
+    Adds an edge, but SAFELY when an edge between u and v already
+    exists with a different relationship type.
+
+    WHY THIS EXISTS (found via real testing, not anticipated
+    speculatively): a plain `graph.add_edge(u, v, type=X)` on a
+    DiGraph OVERWRITES any existing edge between the same (u, v) pair
+    - DiGraph allows only one edge per node pair. This silently
+    destroys real relationships in cases like a function that both
+    DEFINES a nested helper function and later CALLS that same
+    helper - confirmed happening 8 times in click's actual source
+    (e.g. click/formatting.py::wrap_text defines AND calls its own
+    nested `_flush_par` helper). Without this guard, the `calls` edge
+    would silently erase the `defines` edge for that exact pair,
+    losing real structural information with no error or warning.
+
+    This function merges into a `types` list on the edge instead of
+    switching to a MultiDiGraph, deliberately: a MultiDiGraph would
+    also un-collapse the "multiple call-sites to the same target
+    become one edge" behavior we specifically chose for `calls`
+    edges (see resolve_calls) - that trade-off was intentional, not
+    an oversight, and switching graph types would have silently
+    undone it as a side effect while fixing this bug.
+    """
+    if graph.has_edge(u, v):
+        existing_types = graph[u][v].get("types", [graph[u][v]["type"]])
+        if edge_type not in existing_types:
+            existing_types = existing_types + [edge_type]
+        graph[u][v]["types"] = existing_types
+        # `type` stays as the first-seen type for simple single-type
+        # lookups elsewhere; `types` is the authoritative full list.
+    else:
+        graph.add_edge(u, v, type=edge_type, types=[edge_type])
 
 
 # ---------------------------------------------------------------------------
@@ -92,7 +130,7 @@ def build_graph(parse_results: list[FileParseResult]) -> nx.DiGraph:
                 parent_id = qualified_to_id.get(parent_qualified_name, module_id)
             else:
                 parent_id = module_id
-            graph.add_edge(parent_id, node_id, type="defines")
+            _add_typed_edge(graph, parent_id, node_id, "defines")
 
     return graph
 
@@ -252,7 +290,7 @@ def resolve_inheritance(
                         parent_id = class_index.get(target_file, {}).get(simple_name)
 
                 if parent_id and parent_id in graph:
-                    graph.add_edge(child_id, parent_id, type="inherits")
+                    _add_typed_edge(graph, child_id, parent_id, "inherits")
                     resolved += 1
                 else:
                     unresolved += 1
@@ -310,7 +348,7 @@ def resolve_imports(
                 target_file = module_index.get(target_key)
                 if target_file and target_file != module_id:
                     if target_file not in edges_added_to:
-                        graph.add_edge(module_id, target_file, type="imports")
+                        _add_typed_edge(graph, module_id, target_file, "imports")
                         edges_added_to.add(target_file)
                     resolved += 1
                 else:
@@ -320,8 +358,136 @@ def resolve_imports(
 
 
 # ---------------------------------------------------------------------------
-# Persistence
+# calls edge resolution
 # ---------------------------------------------------------------------------
+
+def build_function_indices(
+    graph: nx.DiGraph,
+) -> tuple[dict[str, dict[str, str]], dict[tuple[str, str], dict[str, str]]]:
+    """
+    Builds two lookup structures needed to resolve call targets:
+
+      top_level_index: filepath -> {function_name: node_id}
+          For bare calls to top-level functions, e.g. `add(1, 2)`.
+
+      method_index: (filepath, class_qualified_name) -> {method_name: node_id}
+          For `self.method_name(...)` / `cls.method_name(...)` calls,
+          keyed by the CALLER's own class - not by method name alone,
+          because two different classes in the same file can each
+          define a method with the same name (e.g. both Greeter and
+          LoudGreeter define `greet`). Indexing by (file, class) pair
+          avoids conflating them.
+    """
+    top_level_index: dict[str, dict[str, str]] = {}
+    method_index: dict[tuple[str, str], dict[str, str]] = {}
+
+    for node_id, data in graph.nodes(data=True):
+        if data["type"] == "function":
+            top_level_index.setdefault(data["filepath"], {})[data["name"]] = node_id
+        elif data["type"] == "method":
+            qualified_name = data["qualified_name"]
+            if "." in qualified_name:
+                class_qualified_name = qualified_name.rsplit(".", 1)[0]
+                key = (data["filepath"], class_qualified_name)
+                method_index.setdefault(key, {})[data["name"]] = node_id
+
+    return top_level_index, method_index
+
+
+def resolve_calls(
+    graph: nx.DiGraph,
+    parse_results: list[FileParseResult],
+    module_index: dict[str, str],
+    class_index: dict[str, dict[str, str]],
+    top_level_index: dict[str, dict[str, str]],
+    method_index: dict[tuple[str, str], dict[str, str]],
+) -> dict[str, int]:
+    """
+    Adds `calls` edges: caller function/method -> callee function/
+    method/class, per the roadmap's explicit scope: "same-module calls
+    and directly imported calls only - no dynamic dispatch resolution."
+
+    RESOLUTION RULES, IN ORDER (a call resolves via the first rule
+    that matches; anything else is left unresolved rather than
+    guessed):
+
+      1. `self.x(...)` / `cls.x(...)` inside a method -> resolved
+         against the CALLER'S OWN class's methods only. A call to a
+         method that's only defined on a PARENT class (inherited, not
+         overridden) will NOT resolve here - that would require
+         walking the `inherits` edges at resolution time, which is a
+         reasonable v2 addition, not attempted in v1.
+      2. Bare name matching a top-level function in the SAME file.
+      3. Bare name matching a CLASS in the same file (constructor
+         call, e.g. `Greeter("world")` -> edge to the `Greeter` class
+         node, not to `__init__` - treating instantiation as "uses
+         this class" is the more useful graph relationship for
+         retrieval purposes than pointing at a specific dunder method).
+      4. Bare name imported from elsewhere (function OR class),
+         resolved the same way `inherits` resolves imported base
+         classes.
+      5. Everything else - unresolved. This explicitly includes: any
+         "<complex>" callee (calls on the result of another call),
+         any dotted call not on self/cls (e.g. `os.path.join`,
+         `some_object.method()` where we have no type information
+         about `some_object`), and calls that happen at module scope
+         outside any function (caller_qualified_name is None - there
+         is no function/method node to draw the edge FROM, so these
+         are skipped rather than attributed to the module as a whole).
+
+    Returns resolved/unresolved counts. A LOW resolution rate here is
+    expected and NOT itself a bug - real Python code calls methods on
+    objects whose type isn't known without a type checker or runtime
+    trace, and this project's stated scope explicitly excludes that
+    (see project scope doc: "no dynamic Python call resolution").
+    The resolution rate is a useful number to report in the final
+    write-up precisely because it quantifies that limitation with
+    real data instead of a vague caveat.
+    """
+    resolved = 0
+    unresolved = 0
+
+    for result in parse_results:
+        if not result.success:
+            continue
+
+        import_target_by_name: dict[str, str] = {}
+        for imp in result.imports:
+            for name in imp.names:
+                import_target_by_name[name] = imp.module if imp.module else name
+
+        for call in result.calls:
+            if call.callee == "<complex>" or call.caller_qualified_name is None:
+                unresolved += 1
+                continue
+
+            caller_id = f"{result.filepath}::{call.caller_qualified_name}"
+            parts = call.callee.split(".")
+            target_id: str | None = None
+
+            if parts[0] in ("self", "cls") and len(parts) == 2 and "." in call.caller_qualified_name:
+                caller_class_qn = call.caller_qualified_name.rsplit(".", 1)[0]
+                target_id = method_index.get((result.filepath, caller_class_qn), {}).get(parts[1])
+
+            elif len(parts) == 1:
+                name = parts[0]
+                target_id = top_level_index.get(result.filepath, {}).get(name)
+                if target_id is None:
+                    target_id = class_index.get(result.filepath, {}).get(name)
+                if target_id is None and name in import_target_by_name:
+                    target_file = module_index.get(import_target_by_name[name])
+                    if target_file:
+                        target_id = top_level_index.get(target_file, {}).get(name)
+                        if target_id is None:
+                            target_id = class_index.get(target_file, {}).get(name)
+
+            if target_id and target_id in graph and caller_id in graph:
+                _add_typed_edge(graph, caller_id, target_id, "calls")
+                resolved += 1
+            else:
+                unresolved += 1
+
+    return {"resolved": resolved, "unresolved": unresolved}
 
 def save_graph(graph: nx.DiGraph, output_path: str | Path) -> None:
     output_path = Path(output_path)
@@ -368,18 +534,29 @@ def main(argv: list[str] | None = None) -> int:
     class_index = build_class_index(graph)
     inherit_stats = resolve_inheritance(graph, parse_results, module_index, class_index)
     import_stats = resolve_imports(graph, parse_results, module_index)
+    top_level_index, method_index = build_function_indices(graph)
+    call_stats = resolve_calls(graph, parse_results, module_index, class_index, top_level_index, method_index)
 
     node_counts: dict[str, int] = {}
     for _, data in graph.nodes(data=True):
         node_counts[data["type"]] = node_counts.get(data["type"], 0) + 1
+    # An edge can now carry MULTIPLE relationship types (see
+    # _add_typed_edge), so edge_counts sums per-type occurrences,
+    # which can exceed graph.number_of_edges() when overlaps exist -
+    # both numbers are printed so that's visible, not hidden.
     edge_counts: dict[str, int] = {}
+    multi_type_edges = 0
     for _, _, data in graph.edges(data=True):
-        edge_counts[data["type"]] = edge_counts.get(data["type"], 0) + 1
+        types = data.get("types", [data["type"]])
+        if len(types) > 1:
+            multi_type_edges += 1
+        for t in types:
+            edge_counts[t] = edge_counts.get(t, 0) + 1
 
     print(f"\nTotal nodes: {graph.number_of_nodes()}")
     for node_type, count in sorted(node_counts.items()):
         print(f"  {node_type}: {count}")
-    print(f"Total edges: {graph.number_of_edges()}")
+    print(f"Total edges: {graph.number_of_edges()} (edges carrying >1 relationship type: {multi_type_edges})")
     for edge_type, count in sorted(edge_counts.items()):
         print(f"  {edge_type}: {count}")
 
@@ -390,6 +567,10 @@ def main(argv: list[str] | None = None) -> int:
     print(
         f"imports resolution:  {import_stats['resolved']} resolved, "
         f"{import_stats['unresolved']} unresolved (stdlib / third-party)"
+    )
+    print(
+        f"calls resolution:    {call_stats['resolved']} resolved, "
+        f"{call_stats['unresolved']} unresolved (dynamic/unknown-type calls, by design)"
     )
 
     if args.output:
