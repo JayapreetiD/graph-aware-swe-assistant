@@ -1,10 +1,8 @@
-
-
 """
 graph/graph_builder.py
- 
+
 Builds a NetworkX DiGraph from parser.py output.
- 
+
 Edge types implemented so far:
     - defines   (module -> class/function, class -> method) - trivial,
       needs no resolution, structural only.
@@ -12,32 +10,32 @@ Edge types implemented so far:
       parser only gives us the base class as a plain string like
       "Greeter" or "click.Command" - we have to figure out which
       actual node that refers to, if any.
- 
+
 node_id SCHEME:
     Module nodes:                "<filepath>"
     Class/function/method nodes: "<filepath>::<qualified_name>"
 """
- 
+
 from __future__ import annotations
- 
+
 import argparse
 import logging
 import pickle
 import sys
 from pathlib import Path
- 
+
 import networkx as nx
- 
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from parser.parser import FileParseResult, parse_repository  # noqa: E402
- 
+
 logger = logging.getLogger(__name__)
- 
- 
+
+
 # ---------------------------------------------------------------------------
 # Node + defines edges (unchanged from the previous step)
 # ---------------------------------------------------------------------------
- 
+
 def build_graph(parse_results: list[FileParseResult]) -> nx.DiGraph:
     """
     Build a DiGraph with one node per module/class/function/method and
@@ -45,16 +43,16 @@ def build_graph(parse_results: list[FileParseResult]) -> nx.DiGraph:
     module). See module docstring for the node_id scheme.
     """
     graph = nx.DiGraph()
- 
+
     for result in parse_results:
         if not result.success:
             continue
- 
+
         module_id = result.filepath
         graph.add_node(module_id, type="module", filepath=result.filepath)
- 
+
         qualified_to_id: dict[str, str] = {}
- 
+
         for cls in result.classes:
             node_id = f"{result.filepath}::{cls.qualified_name}"
             qualified_to_id[cls.qualified_name] = node_id
@@ -70,7 +68,7 @@ def build_graph(parse_results: list[FileParseResult]) -> nx.DiGraph:
                 start_line=cls.start_line,
                 end_line=cls.end_line,
             )
- 
+
         for fn in result.functions:
             node_id = f"{result.filepath}::{fn.qualified_name}"
             qualified_to_id[fn.qualified_name] = node_id
@@ -87,7 +85,7 @@ def build_graph(parse_results: list[FileParseResult]) -> nx.DiGraph:
                 start_line=fn.start_line,
                 end_line=fn.end_line,
             )
- 
+
         for qualified_name, node_id in qualified_to_id.items():
             if "." in qualified_name:
                 parent_qualified_name = qualified_name.rsplit(".", 1)[0]
@@ -95,20 +93,20 @@ def build_graph(parse_results: list[FileParseResult]) -> nx.DiGraph:
             else:
                 parent_id = module_id
             graph.add_edge(parent_id, node_id, type="defines")
- 
+
     return graph
- 
- 
+
+
 # ---------------------------------------------------------------------------
 # inherits edge resolution
 # ---------------------------------------------------------------------------
- 
+
 def build_module_index(parse_results: list[FileParseResult]) -> dict[str, str]:
     """
     Maps a "guessed dotted module path" -> filepath, so an import
     statement's module string (e.g. "click.core") can be turned back
     into the actual file that defines it (e.g. "click/core.py").
- 
+
     Two kinds of entries are added:
       1. Full dotted path from the file's relative path, e.g.
          "click/core.py" -> dotted key "click.core".
@@ -122,7 +120,7 @@ def build_module_index(parse_results: list[FileParseResult]) -> dict[str, str]:
          match confidently picking the WRONG file when multiple
          subpackages have a same-named module - in that ambiguous
          case we deliberately resolve nothing rather than guess wrong.
- 
+
     LIMITATION: because parser.py's ImportInfo does not record the
     relative-import `level` (number of leading dots), a relative
     import is only resolved correctly when its target module's stem
@@ -137,30 +135,30 @@ def build_module_index(parse_results: list[FileParseResult]) -> dict[str, str]:
     index: dict[str, str] = {}
     stem_counts: dict[str, int] = {}
     filepath_by_stem: dict[str, str] = {}
- 
+
     for result in parse_results:
         if not result.success:
             continue
         dotted = Path(result.filepath).with_suffix("").as_posix().replace("/", ".")
         index[dotted] = result.filepath
- 
+
         stem = Path(result.filepath).stem
         stem_counts[stem] = stem_counts.get(stem, 0) + 1
         filepath_by_stem[stem] = result.filepath
- 
+
     for stem, count in stem_counts.items():
         if count == 1:
             index.setdefault(stem, filepath_by_stem[stem])
- 
+
     return index
- 
- 
+
+
 def build_class_index(graph: nx.DiGraph) -> dict[str, dict[str, str]]:
     """
     Maps filepath -> {simple_class_name: node_id}, built from the
     graph's own class nodes. Used to look up "the class named X in
     file Y" while resolving base classes.
- 
+
     LIMITATION: keyed by simple name, not qualified_name. If a file
     has two classes with the same simple name at different nesting
     levels (rare, but possible with nested classes), the later one
@@ -173,8 +171,8 @@ def build_class_index(graph: nx.DiGraph) -> dict[str, dict[str, str]]:
             continue
         index.setdefault(data["filepath"], {})[data["name"]] = node_id
     return index
- 
- 
+
+
 def resolve_inheritance(
     graph: nx.DiGraph,
     parse_results: list[FileParseResult],
@@ -185,7 +183,7 @@ def resolve_inheritance(
     Adds `inherits` edges (subclass -> base class), matching the same
     directional convention as `defines`: the edge points FROM the
     thing doing the referencing TO the thing being referenced.
- 
+
     RESOLUTION RULES (in order of attempt, per base class string):
       1. Same-file: base name matches a class in the SAME file.
       2. Imported, explicit prefix (e.g. "click.Command"): the prefix
@@ -197,10 +195,10 @@ def resolve_inheritance(
       4. Otherwise: UNRESOLVED. This is the expected, correct outcome
          for built-ins (Exception, object) and third-party/stdlib
          base classes not present in this repo - not a bug.
- 
+
     Returns resolved/unresolved counts so the caller can report
     coverage rather than assuming 100%.
- 
+
     LIMITATION, confirmed against real behavior on click's source
     (src/click/types.py): the parser has no concept of conditional
     code paths (if/else, `if TYPE_CHECKING:` blocks). A class or
@@ -218,30 +216,30 @@ def resolve_inheritance(
     """
     resolved = 0
     unresolved = 0
- 
+
     for result in parse_results:
         if not result.success:
             continue
- 
+
         import_module_by_name: dict[str, str] = {}
         for imp in result.imports:
             for name in imp.names:
                 import_module_by_name[name] = imp.module if imp.module else name
- 
+
         for cls in result.classes:
             child_id = f"{result.filepath}::{cls.qualified_name}"
- 
+
             for base in cls.bases:
                 base = base.strip()
                 if not base or base == "object":
                     continue
- 
+
                 parts = base.split(".")
                 simple_name = parts[-1]
                 prefix = parts[0] if len(parts) > 1 else None
- 
+
                 parent_id: str | None = None
- 
+
                 if prefix and prefix in import_module_by_name:
                     target_file = module_index.get(import_module_by_name[prefix])
                     if target_file:
@@ -252,37 +250,96 @@ def resolve_inheritance(
                     target_file = module_index.get(import_module_by_name[simple_name])
                     if target_file:
                         parent_id = class_index.get(target_file, {}).get(simple_name)
- 
+
                 if parent_id and parent_id in graph:
                     graph.add_edge(child_id, parent_id, type="inherits")
                     resolved += 1
                 else:
                     unresolved += 1
- 
+
     return {"resolved": resolved, "unresolved": unresolved}
- 
- 
+
+
+def resolve_imports(
+    graph: nx.DiGraph,
+    parse_results: list[FileParseResult],
+    module_index: dict[str, str],
+) -> dict[str, int]:
+    """
+    Adds `imports` edges: module -> module, one edge per distinct
+    (source, target) pair regardless of how many names were imported
+    from that target. This is coarser granularity than `inherits`
+    (class -> class) or `defines` (module/class -> function/class) by
+    design - `imports` per the roadmap's edge type list is a
+    module-level relationship, not a "which specific name" record
+    (the specific imported names are still available on FileParseResult
+    if ever needed - just not modeled as separate graph edges).
+
+    Handles both import forms:
+      - `from X import a, b` (imp.module = "X", imp.names = ["a","b"])
+      - `import X` (imp.module = None, imp.names = ["X"] - here each
+        name IS a module to resolve directly, not an attribute of one)
+
+    Resolution reuses module_index exactly as inherits resolution
+    does, so it inherits (no pun intended) the same relative-import
+    limitation documented on build_module_index: a relative import
+    only resolves correctly when its target's file stem is globally
+    unique in the repo.
+
+    Self-imports (a file resolving to itself) are skipped - not
+    something normal Python code does, but guarded defensively rather
+    than assumed impossible.
+    """
+    resolved = 0
+    unresolved = 0
+
+    for result in parse_results:
+        if not result.success:
+            continue
+
+        module_id = result.filepath
+        edges_added_to: set[str] = set()
+
+        for imp in result.imports:
+            # Collect the module string(s) this import statement could
+            # resolve to. `from X import a, b` -> just "X", checked
+            # once. `import X, Y` -> each of X, Y is itself a module.
+            target_keys = [imp.module] if imp.module else imp.names
+
+            for target_key in target_keys:
+                target_file = module_index.get(target_key)
+                if target_file and target_file != module_id:
+                    if target_file not in edges_added_to:
+                        graph.add_edge(module_id, target_file, type="imports")
+                        edges_added_to.add(target_file)
+                    resolved += 1
+                else:
+                    unresolved += 1
+
+    return {"resolved": resolved, "unresolved": unresolved}
+
+
 # ---------------------------------------------------------------------------
 # Persistence
 # ---------------------------------------------------------------------------
- 
+
 def save_graph(graph: nx.DiGraph, output_path: str | Path) -> None:
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("wb") as f:
         pickle.dump(graph, f)
     logger.info("Saved graph to %s", output_path)
- 
- 
+
+
 def load_graph(input_path: str | Path) -> nx.DiGraph:
     with Path(input_path).open("rb") as f:
         return pickle.load(f)
- 
- 
+
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
- 
+
 def _build_arg_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="graph_builder.py",
@@ -295,46 +352,51 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     )
     p.add_argument("-v", "--verbose", action="store_true", help="Enable DEBUG-level logging.")
     return p
- 
- 
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _build_arg_parser().parse_args(argv)
     logging.basicConfig(
         level=logging.DEBUG if args.verbose else logging.INFO,
         format="%(levelname)s: %(message)s",
     )
- 
+
     parse_results = parse_repository(args.repo_path)
     graph = build_graph(parse_results)
- 
+
     module_index = build_module_index(parse_results)
     class_index = build_class_index(graph)
     inherit_stats = resolve_inheritance(graph, parse_results, module_index, class_index)
- 
+    import_stats = resolve_imports(graph, parse_results, module_index)
+
     node_counts: dict[str, int] = {}
     for _, data in graph.nodes(data=True):
         node_counts[data["type"]] = node_counts.get(data["type"], 0) + 1
     edge_counts: dict[str, int] = {}
     for _, _, data in graph.edges(data=True):
         edge_counts[data["type"]] = edge_counts.get(data["type"], 0) + 1
- 
+
     print(f"\nTotal nodes: {graph.number_of_nodes()}")
     for node_type, count in sorted(node_counts.items()):
         print(f"  {node_type}: {count}")
     print(f"Total edges: {graph.number_of_edges()}")
     for edge_type, count in sorted(edge_counts.items()):
         print(f"  {edge_type}: {count}")
- 
+
     print(
         f"\ninherits resolution: {inherit_stats['resolved']} resolved, "
         f"{inherit_stats['unresolved']} unresolved (built-ins / external bases)"
     )
- 
+    print(
+        f"imports resolution:  {import_stats['resolved']} resolved, "
+        f"{import_stats['unresolved']} unresolved (stdlib / third-party)"
+    )
+
     if args.output:
         save_graph(graph, args.output)
- 
+
     return 0
- 
- 
+
+
 if __name__ == "__main__":
     sys.exit(main())
