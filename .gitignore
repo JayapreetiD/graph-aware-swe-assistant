@@ -1,2 +1,6 @@
 fake_repo/
 data/graph/*.gpickle
+__pycache__/
+*.pyc
+data/graph/test_subgraph.png
+data/graph/*.gpickle
