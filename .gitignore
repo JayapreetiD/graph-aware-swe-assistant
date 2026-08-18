@@ -4,3 +4,5 @@ __pycache__/
 *.pyc
 data/graph/test_subgraph.png
 data/graph/*.gpickle
+data/chunks/*.json
+data/vectors/*.npz
