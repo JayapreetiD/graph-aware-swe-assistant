@@ -133,6 +133,43 @@ def search(
     ).points
 
     return [{"score": r.score, **r.payload} for r in results]
+def get_chunks_by_node_ids(
+    client: QdrantClient,
+    node_ids: list[str],
+    collection_name: str = COLLECTION_NAME,
+) -> dict[str, dict]:
+    """Fetch full chunk payloads for a specific set of node_ids.
+
+    Needed by hybrid_retriever.py: graph expansion (graph_service.get_neighbors)
+    returns node_ids and hop distances only, never chunk content — that's a
+    deliberate separation (graph = structure, vector store = content). This
+    function is the join point: given node_ids discovered via the graph,
+    pull their code/signature/filepath/etc. back out of Qdrant.
+
+    Uses a payload filter scroll, not a vector search — there's no query
+    vector here, just "give me these specific IDs." Point IDs in this
+    collection are sequential ints (see build_collection's design note),
+    so node_id -> point lookup has to go through the payload field, not
+    the point ID directly.
+
+    Returns node_id -> payload dict. node_ids with no match (e.g. graph
+    has nodes that were filtered out during chunking, such as trivially
+    short functions) are silently omitted — callers must handle missing
+    keys, not assume every requested node_id comes back.
+    """
+    if not node_ids:
+        return {}
+
+    results, _ = client.scroll(
+        collection_name=collection_name,
+        scroll_filter=models.Filter(
+            must=[models.FieldCondition(key="node_id", match=models.MatchAny(any=node_ids))]
+        ),
+        limit=len(node_ids),
+        with_payload=True,
+        with_vectors=False,
+    )
+    return {point.payload["node_id"]: point.payload for point in results}
 
 
 if __name__ == "__main__":
