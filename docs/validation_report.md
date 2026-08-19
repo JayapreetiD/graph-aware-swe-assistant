@@ -155,3 +155,17 @@ re-litigated here, see inline code comments for full detail):
   identical qualified names collapse onto a single graph node at
   graph-construction time (not at parser extraction time, which is
   what this report validates).
+
+## Post-Validation Fix (2026-08-18)
+
+A code review after this report was written found that
+`build_function_indices` in `graph_builder.py` indexed nested
+functions by simple name only, causing same-named nested functions
+in the same file (e.g. `click/decorators.py`'s multiple `decorator`
+and `new_func` helpers) to silently collide, resolving `calls` edges
+to the wrong target node. Confirmed via a direct collision check on
+the graph (4 collisions found). Fixed by excluding ambiguous
+(filepath, name) keys from the resolution index entirely, so affected
+calls now correctly fall through to "unresolved" rather than
+resolving wrong. Edge count changed from 1103 to 1099 (4 wrong edges
+removed). See `build_function_indices` docstring for full detail.
