@@ -372,27 +372,77 @@ def build_function_indices(
 
       method_index: (filepath, class_qualified_name) -> {method_name: node_id}
           For `self.method_name(...)` / `cls.method_name(...)` calls,
-          keyed by the CALLER's own class - not by method name alone,
-          because two different classes in the same file can each
-          define a method with the same name (e.g. both Greeter and
-          LoudGreeter define `greet`). Indexing by (file, class) pair
-          avoids conflating them.
+          keyed by the CALLER's own class.
+
+    AMBIGUITY HANDLING (found via real collision check on click's
+    source, not anticipated speculatively): a file can contain
+    multiple NESTED functions sharing the same simple name under
+    different enclosing functions (e.g. click/decorators.py defines
+    five separate nested functions all named `decorator`, one inside
+    each of make_pass_decorator, pass_meta_key, command, argument,
+    option). Since top_level_index is keyed by simple name only (not
+    full qualified_name, and not enclosing-scope-aware), a naive
+    "last one wins" index would silently resolve a bare call to the
+    WRONG node - a wrong edge, not just a missing one, which is worse
+    than unresolved for the reasons documented in resolve_calls'
+    docstring.
+
+    RESOLUTION: any (filepath, name) key with more than one matching
+    node is treated as AMBIGUOUS and excluded entirely from the
+    index, so calls to it fall through to "unresolved" - consistent
+    with this module's existing philosophy (resolve_calls,
+    resolve_inheritance): anything uncertain is left unresolved
+    rather than guessed. This only affects NESTED functions sharing
+    a name with a sibling nested function in the same file - true
+    top-level, module-scope functions are effectively never
+    ambiguous in practice (Python itself would raise most naming
+    conflicts at that scope).
     """
     top_level_index: dict[str, dict[str, str]] = {}
     method_index: dict[tuple[str, str], dict[str, str]] = {}
 
+    # Collect ALL candidates per key first, so we can detect
+    # collisions before committing anything to the index - a
+    # single-pass "last one wins" approach can't distinguish
+    # "no collision" from "collision, silently overwritten."
+    top_level_candidates: dict[tuple[str, str], list[str]] = {}
+    method_candidates: dict[tuple[str, str, str], list[str]] = {}
+
     for node_id, data in graph.nodes(data=True):
         if data["type"] == "function":
-            top_level_index.setdefault(data["filepath"], {})[data["name"]] = node_id
+            key = (data["filepath"], data["name"])
+            top_level_candidates.setdefault(key, []).append(node_id)
         elif data["type"] == "method":
             qualified_name = data["qualified_name"]
             if "." in qualified_name:
                 class_qualified_name = qualified_name.rsplit(".", 1)[0]
-                key = (data["filepath"], class_qualified_name)
-                method_index.setdefault(key, {})[data["name"]] = node_id
+                key = (data["filepath"], class_qualified_name, data["name"])
+                method_candidates.setdefault(key, []).append(node_id)
+
+    ambiguous_functions = 0
+    for (filepath, name), node_ids in top_level_candidates.items():
+        if len(node_ids) > 1:
+            ambiguous_functions += 1
+            continue  # excluded from index - falls through to unresolved
+        top_level_index.setdefault(filepath, {})[name] = node_ids[0]
+
+    ambiguous_methods = 0
+    for (filepath, class_qn, name), node_ids in method_candidates.items():
+        if len(node_ids) > 1:
+            ambiguous_methods += 1
+            continue
+        method_index.setdefault((filepath, class_qn), {})[name] = node_ids[0]
+
+    if ambiguous_functions or ambiguous_methods:
+        logger.warning(
+            "Excluded %d ambiguous function name(s) and %d ambiguous method name(s) "
+            "from call resolution indices (multiple same-named nested functions/methods "
+            "in the same scope-file) - calls to these will resolve as unresolved rather "
+            "than risk a wrong edge.",
+            ambiguous_functions, ambiguous_methods,
+        )
 
     return top_level_index, method_index
-
 
 def resolve_calls(
     graph: nx.DiGraph,
