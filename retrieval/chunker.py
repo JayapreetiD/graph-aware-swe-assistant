@@ -176,7 +176,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
     GRAPH_PATH = "data/graph/graph.gpickle"
-    REPO_ROOT = Path.home() / "repos" / "target-small"/ "src"
+    REPO_ROOT = Path.home() / "repos" / "target-small"/ "src" / "click"
     OUTPUT_PATH = "data/chunks/chunks.json"
 
     graph = load_graph(GRAPH_PATH)
