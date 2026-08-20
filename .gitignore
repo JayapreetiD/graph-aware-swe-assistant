@@ -7,3 +7,4 @@ data/graph/*.gpickle
 data/chunks/*.json
 data/vectors/*.npz
 data/vectors/qdrant_db/
+.env
