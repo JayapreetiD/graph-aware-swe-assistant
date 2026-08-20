@@ -27,7 +27,7 @@ from dataclasses import dataclass, field
 # format, that's a signal worth surfacing (instruction-following
 # failure), not something to silently paper over with a looser regex.
 CITATION_PATTERN = re.compile(
-    r"\(([^\s():]+):(\d+)-(\d+)\)"
+    r"\(`?([^\s():`]+):(\d+)-(\d+)`?\)"
 )
 
 

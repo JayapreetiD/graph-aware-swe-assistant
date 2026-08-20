@@ -27,8 +27,8 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-MODEL_NAME = "gemini-3.7-flash"
-MAX_OUTPUT_TOKENS = 1024
+MODEL_NAME = "gemini-3.6-flash"
+MAX_OUTPUT_TOKENS = 2048
 
 
 @dataclass
@@ -64,7 +64,9 @@ def generate_answer(prompt: str) -> LLMResult:
     except Exception as e:  # noqa: BLE001
         logger.error("Unexpected error calling Gemini: %s", e)
         return LLMResult(answer="", model=MODEL_NAME, success=False, error=str(e))
-
+    print(
+        "finish_reason:",
+        getattr(response.candidates[0], "finish_reason", "unknown") if response.candidates else "no candidates",)
     if not response.text:
         logger.warning("Gemini returned an empty response for this prompt.")
         return LLMResult(

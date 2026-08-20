@@ -98,10 +98,10 @@ def build_prompt(question: str, chunks: list[dict]) -> PromptResult:
 
         if running_tokens + block_tokens > CHUNK_TOKEN_BUDGET:
             logger.info(
-                "Context budget reached: stopping at %d/%d chunks (%d tokens used)",
-                len(chunks_used), len(chunks), running_tokens,
+                "Skipping oversized chunk %s (%d tokens, would exceed budget)",
+                chunk.get("node_id", "?"), block_tokens,
             )
-            break
+            continue
 
         context_blocks.append(block)
         chunks_used.append(chunk)
