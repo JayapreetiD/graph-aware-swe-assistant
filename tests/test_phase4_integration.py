@@ -6,15 +6,12 @@ tests/test_phase4_integration.py
 End-to-end smoke test for Phase 4: real retriever output -> prompt
 builder -> LLM -> citation verifier, on a real click codebase question.
 
-This is NOT a unit test with mocked data - it deliberately uses real
-retrieval output to catch data-shape mismatches between what the
-retriever returns and what prompt_builder.py / citation_verifier.py
-expect (dict key names, types, etc.) before those mismatches show up
-buried inside a FastAPI request cycle.
-
-Construction pattern for SemanticRetriever / graph / HybridRetriever
-is copied from tests/test_hybrid_retriever.py's fixtures, since that
-is the real, working pattern already used elsewhere in this project.
+Runs BOTH SemanticRetriever (baseline) and HybridRetriever through the
+IDENTICAL downstream pipeline (same prompt_builder, same llm_service,
+same citation_verifier) on the SAME question. This directly tests the
+load-bearing assumption behind Phase 5: that prompt_builder.py and
+citation_verifier.py are retrieval-mode-agnostic, i.e. both retrievers'
+chunk dicts are compatible with the same downstream code.
 
 Run with: python -m tests.test_phase4_integration
 """
@@ -32,19 +29,56 @@ from retrieval.retriever import SemanticRetriever
 
 GRAPH_PATH = "data/graph/graph.gpickle"
 
-# A real question about the click codebase - deliberately something
-# with a concrete, checkable answer rather than an open-ended one,
-# so it's easy to eyeball whether the answer is grounded or not.
 TEST_QUESTION = "How does click resolve which command to invoke in a group?"
+
+
+def run_pipeline(label: str, chunks: list[dict]) -> None:
+    print(f"\n{'='*70}")
+    print(f"PIPELINE RUN: {label}")
+    print(f"{'='*70}")
+
+    print(f"Retrieved {len(chunks)} chunks.")
+    if not chunks:
+        print(f"FAILED [{label}]: retriever returned zero chunks.")
+        return
+
+    print("First chunk keys:", list(chunks[0].keys()))
+    print("First chunk node_id:", chunks[0].get("node_id"))
+
+    prompt_result = build_prompt(TEST_QUESTION, chunks)
+    print(f"Chunks used: {len(prompt_result.chunks_used)} / {len(chunks)}")
+    print(f"Chunks dropped: {prompt_result.chunks_dropped}")
+    print(f"Total prompt tokens: {prompt_result.total_tokens}")
+
+    llm_result = generate_answer(prompt_result.prompt)
+    if not llm_result.success:
+        print(f"FAILED [{label}]: LLM call failed - {llm_result.error}")
+        return
+
+    print(f"Model: {llm_result.model}")
+    print(f"Truncated: {llm_result.truncated}")
+    print("\n--- Answer ---")
+    print(llm_result.answer)
+    print("--- End answer ---")
+
+    report = verify_citations(llm_result.answer, prompt_result.chunks_used)
+    print(f"\nTotal citations: {report.total_citations}")
+    print(f"Valid: {report.valid_citations}")
+    print(f"Invalid: {report.invalid_citations}")
+    print(f"Citation correctness rate: {report.citation_correctness_rate:.2f}")
+
+    if report.verdicts:
+        for v in report.verdicts:
+            print(f"  {v.citation.raw_text} -> valid={v.is_valid} ({v.reason})")
+    else:
+        print("WARNING: zero parseable citations.")
 
 
 def run_integration_test() -> None:
     print("=" * 70)
-    print("PHASE 4 INTEGRATION TEST")
+    print("PHASE 4 INTEGRATION TEST - SEMANTIC vs HYBRID")
     print("=" * 70)
 
-    # --- Step 1: Retrieval setup ---
-    print("\n[1/4] Setting up retrievers...")
     if not Path(GRAPH_PATH).exists():
         print(f"FAILED: graph file not found at {GRAPH_PATH}")
         return
@@ -53,69 +87,18 @@ def run_integration_test() -> None:
     semantic_retriever = SemanticRetriever()
 
     try:
+        semantic_chunks = semantic_retriever.retrieve(TEST_QUESTION, top_k=10)
+        run_pipeline("SEMANTIC-ONLY", semantic_chunks)
+
         hybrid_retriever = HybridRetriever(semantic_retriever, graph, decay=0.6)
-
-        print("Running hybrid retrieval...")
-        chunks = hybrid_retriever.retrieve(TEST_QUESTION)
-
-        print(f"Retrieved {len(chunks)} chunks.")
-        if not chunks:
-            print("FAILED: retriever returned zero chunks. Stopping.")
-            return
-
-        # Print the shape of the first chunk so any key mismatch with
-        # prompt_builder.py / citation_verifier.py is immediately visible.
-        print("First chunk keys:", list(chunks[0].keys()))
-        print("First chunk node_id:", chunks[0].get("node_id"))
-
-        # --- Step 2: Prompt building ---
-        print("\n[2/4] Building prompt...")
-        prompt_result = build_prompt(TEST_QUESTION, chunks)
-        print(f"Chunks used: {len(prompt_result.chunks_used)} / {len(chunks)}")
-        print(f"Chunks dropped: {prompt_result.chunks_dropped}")
-        print(f"Total prompt tokens: {prompt_result.total_tokens}")
-
-        # --- Step 3: LLM call ---
-        print("\n[3/4] Calling LLM...")
-        llm_result = generate_answer(prompt_result.prompt)
-
-        if not llm_result.success:
-            print(f"FAILED: LLM call failed - {llm_result.error}")
-            return
-
-        print(f"Model: {llm_result.model}")
-        print("\n--- Answer ---")
-        print(llm_result.answer)
-        print("--- End answer ---")
-
-        # --- Step 4: Citation verification ---
-        print("\n[4/4] Verifying citations...")
-        report = verify_citations(llm_result.answer, prompt_result.chunks_used)
-
-        print(f"Total citations found: {report.total_citations}")
-        print(f"Valid: {report.valid_citations}")
-        print(f"Invalid: {report.invalid_citations}")
-        print(f"Citation correctness rate: {report.citation_correctness_rate:.2f}")
-
-        if report.verdicts:
-            print("\nPer-citation breakdown:")
-            for v in report.verdicts:
-                print(f"  {v.citation.raw_text} -> valid={v.is_valid} ({v.reason})")
-        else:
-            print(
-                "\nWARNING: LLM produced zero parseable citations. This is a "
-                "real failure worth investigating - either the model ignored "
-                "the citation instruction, or its citation format doesn't "
-                "match CITATION_PATTERN in citation_verifier.py."
-            )
+        hybrid_chunks = hybrid_retriever.retrieve(TEST_QUESTION)
+        run_pipeline("HYBRID", hybrid_chunks)
 
         print("\n" + "=" * 70)
         print("INTEGRATION TEST COMPLETE")
         print("=" * 70)
 
     finally:
-        # SemanticRetriever holds a Qdrant connection open - always
-        # close it, even if something above failed or returned early.
         semantic_retriever.close()
 
 
