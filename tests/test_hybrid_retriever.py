@@ -25,7 +25,7 @@ from graph.graph_service import get_neighbors
 from retrieval.retriever import SemanticRetriever
 from retrieval.hybrid_retriever import HybridRetriever
 
-GRAPH_PATH = "data/graph/graph.gpickle"
+from config.settings import GRAPH_PATH
 
 # A node known (from manual Phase 3 testing) to have neighbors at hop 1, 2, and 3.
 # If this node ever gets removed/renamed by a repo re-parse, update this constant.

@@ -1,5 +1,3 @@
-
-
 """
 retrieval/retriever.py
 
@@ -30,6 +28,7 @@ from sentence_transformers import SentenceTransformer
 
 from retrieval.vector_store import COLLECTION_NAME, get_client, search
 from retrieval.embedder import MODEL_NAME
+from config.settings import VECTOR_DB_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +39,7 @@ class SemanticRetriever:
 
     def __init__(
         self,
-        db_path: str | Path = "data/vectors/qdrant_db",
+        db_path: str | Path = VECTOR_DB_PATH,
         collection_name: str = COLLECTION_NAME,
         model: SentenceTransformer | None = None,
         model_name: str = MODEL_NAME,

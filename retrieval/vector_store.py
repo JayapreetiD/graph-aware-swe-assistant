@@ -175,10 +175,10 @@ def get_chunks_by_node_ids(
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-    CHUNKS_PATH = "data/chunks/chunks.json"
-    EMBEDDINGS_PATH = "data/vectors/embeddings.npz"
-    DB_PATH = "data/vectors/qdrant_db"
-
+    from config.settings import VECTOR_DB_PATH, ACTIVE_REPO
+    CHUNKS_PATH = f"data/chunks/{ACTIVE_REPO}/chunks.json"
+    EMBEDDINGS_PATH = f"data/vectors/{ACTIVE_REPO}/embeddings.npz"
+    DB_PATH = VECTOR_DB_PATH
     chunks_by_id = load_chunks(CHUNKS_PATH)
     node_ids, embeddings = load_embeddings(EMBEDDINGS_PATH)
 

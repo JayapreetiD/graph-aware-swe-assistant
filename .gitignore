@@ -8,3 +8,9 @@ data/chunks/*.json
 data/vectors/*.npz
 data/vectors/qdrant_db/
 .env
+
+# Repo-scoped artifact paths (post config/settings.py refactor)
+data/graph/**/*.gpickle
+data/chunks/**/*.json
+data/vectors/**/*.npz
+data/vectors/**/qdrant_db/

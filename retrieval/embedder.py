@@ -107,8 +107,10 @@ def save_embeddings(node_ids: list[str], embeddings: np.ndarray, output_path: st
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-    CHUNKS_PATH = "data/chunks/chunks.json"
-    OUTPUT_PATH = "data/vectors/embeddings.npz"
+    
+    from config.settings import ACTIVE_REPO
+    CHUNKS_PATH = f"data/chunks/{ACTIVE_REPO}/chunks.json"
+    OUTPUT_PATH = f"data/vectors/{ACTIVE_REPO}/embeddings.npz"
 
     chunks = load_chunks(CHUNKS_PATH)
     node_ids, embeddings = embed_chunks(chunks)

@@ -27,7 +27,7 @@ from llm.prompt_builder import build_prompt
 from retrieval.hybrid_retriever import HybridRetriever
 from retrieval.retriever import SemanticRetriever
 
-GRAPH_PATH = "data/graph/graph.gpickle"
+from config.settings import GRAPH_PATH
 
 TEST_QUESTION = "How does click resolve which command to invoke in a group?"
 

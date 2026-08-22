@@ -1,5 +1,3 @@
-
-
 """
 retrieval/hybrid_retriever.py
 
@@ -144,7 +142,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-    GRAPH_PATH = "data/graph/graph.gpickle"  # adjust to your actual saved path
+    from config.settings import GRAPH_PATH
 
     if not Path(GRAPH_PATH).exists():
         print(f"Graph file not found at {GRAPH_PATH} — update GRAPH_PATH to match your Phase 1 output.")

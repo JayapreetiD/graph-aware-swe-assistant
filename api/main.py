@@ -1,5 +1,3 @@
-
-
 """
 api/main.py
 
@@ -34,7 +32,7 @@ from retrieval.retriever import SemanticRetriever
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
-GRAPH_PATH = "data/graph/graph.gpickle"
+from config.settings import GRAPH_PATH
 
 # Populated at startup, used by the /query endpoint. Not module-level
 # constants because they require I/O (file load, DB connection) that
