@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "repo": "click",
+    "pinned_commit": "9c4dfdaebe0e6b2aabc566eb81f6f10eb5cd6ea1",
+    "batch": 2,
+    "notes": "Batch 1 (q01-q10) leaned heavily on core.py as the origin file for cross-file chains. This batch deliberately excludes core.py as an origin, drawing instead from decorators.py, exceptions.py, formatting.py, parser.py, termui.py, types.py, testing.py, utils.py, _termui_impl.py, _textwrap.py, _winconsole.py, and shell_completion.py, to avoid the benchmark implicitly measuring only 'how well does hybrid retrieve things core.py calls'. Echo-hub-centered queries are capped at 1 in this batch (2 total across batch1+batch2), since utils.py::echo dominates the cross-file call edges and overusing it would inflate apparent hybrid performance via a single hub node rather than testing retrieval generality."
+  },
+  "queries": [
+    {
+      "query_id": "q11",
+      "question": "How does the @pass_obj decorator give a command access to the context's obj attribute?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "decorators.py::pass_obj.new_func", "filepath": "decorators.py", "start_line": 45, "end_line": 46},
+        {"node_id": "globals.py::get_current_context", "filepath": "globals.py", "start_line": 20, "end_line": 41}
+      ],
+      "notes": "Same pattern as q04 (pass_context) but a different decorator - tests whether the finding generalizes across click's decorator family, not just one instance."
+    },
+    {
+      "query_id": "q12",
+      "question": "What happens when Click fails to write to a lazily-opened file, and how is the filename shown in the error?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "exceptions.py::FileError.__init__", "filepath": "exceptions.py", "start_line": 348, "end_line": 354},
+        {"node_id": "utils.py::format_filename", "filepath": "utils.py", "start_line": 442, "end_line": 481}
+      ],
+      "notes": "Query origin is exceptions.py, not core.py; tests retrieval of a formatting helper in a differently-named file."
+    },
+    {
+      "query_id": "q13",
+      "question": "How does Click format the list of option flags shown in help text, like '-v, --verbose'?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "formatting.py::join_options", "filepath": "formatting.py", "start_line": 302, "end_line": 320},
+        {"node_id": "parser.py::_split_opt", "filepath": "parser.py", "start_line": 111, "end_line": 117}
+      ],
+      "notes": "formatting.py to parser.py; tests a cross-file dependency between two files that are not obviously related by name."
+    },
+    {
+      "query_id": "q14",
+      "question": "What error does Click raise when a positional argument fails validation during parsing?",
+      "category": "local_0hop",
+      "expected_hybrid_advantage": false,
+      "ground_truth_nodes": [
+        {"node_id": "parser.py::_Argument.process", "filepath": "parser.py", "start_line": 191, "end_line": 213},
+        {"node_id": "exceptions.py::BadArgumentUsage", "filepath": "exceptions.py", "start_line": 323, "end_line": 329}
+      ],
+      "notes": "'positional argument fails validation' is lexically close to BadArgumentUsage; likely resolvable by semantic-only, included as another control case."
+    },
+    {
+      "query_id": "q15",
+      "question": "What happens when Click encounters an unrecognized long option like --foo on the command line?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "parser.py::_OptionParser._match_long_opt", "filepath": "parser.py", "start_line": 363, "end_line": 388},
+        {"node_id": "exceptions.py::NoSuchOption", "filepath": "exceptions.py", "start_line": 232, "end_line": 265},
+        {"node_id": "exceptions.py::BadOptionUsage", "filepath": "exceptions.py", "start_line": 304, "end_line": 320}
+      ],
+      "notes": "Multi-target: two distinct exception types can result from the same matching function depending on the failure mode."
+    },
+    {
+      "query_id": "q16",
+      "question": "When Click prompts a user for input and the value needs type conversion, how does it pick the right type converter?",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "termui.py::prompt", "filepath": "termui.py", "start_line": 167, "end_line": 285},
+        {"node_id": "types.py::convert_type", "filepath": "types.py", "start_line": 1341, "end_line": 1382},
+        {"node_id": "types.py::_guess_type", "filepath": "types.py", "start_line": 1296, "end_line": 1328}
+      ],
+      "notes": "termui.py to types.py, 2 hops; 'pick the right type converter' vs '_guess_type' tests lexical distance across the chain."
+    },
+    {
+      "query_id": "q17",
+      "question": "How does Click's testing utility simulate stdin input as a binary stream for CLI tests?",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "testing.py::make_input_stream", "filepath": "testing.py", "start_line": 211, "end_line": 228},
+        {"node_id": "_compat.py::_find_binary_reader", "filepath": "_compat.py", "start_line": 176, "end_line": 191},
+        {"node_id": "_compat.py::_is_binary_reader", "filepath": "_compat.py", "start_line": 154, "end_line": 158}
+      ],
+      "notes": "testing.py is a distinct module from the rest of the batch; likely underrepresented in general semantic search results since it's test infrastructure, not core CLI logic."
+    },
+    {
+      "query_id": "q18",
+      "question": "What happens internally when a lazily-opened file handle is finally accessed and opened for real?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "utils.py::_LazyFile.open", "filepath": "utils.py", "start_line": 165, "end_line": 181},
+        {"node_id": "_compat.py::_AtomicFile", "filepath": "_compat.py", "start_line": 455, "end_line": 488}
+      ],
+      "notes": "'lazily-opened' vs '_AtomicFile' - different naming conventions across files, testing whether semantic-only bridges the gap."
+    },
+    {
+      "query_id": "q19",
+      "question": "How does Click's launch() function open a URL or file in the user's default application, and how does it handle quoting file paths?",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "termui.py::launch", "filepath": "termui.py", "start_line": 902, "end_line": 928},
+        {"node_id": "_termui_impl.py::open_url", "filepath": "_termui_impl.py", "start_line": 772, "end_line": 839},
+        {"node_id": "_termui_impl.py::open_url._unquote_file", "filepath": "_termui_impl.py", "start_line": 775, "end_line": 781}
+      ],
+      "notes": "Nested function target (_unquote_file is defined inside open_url) - tests whether chunking/retrieval correctly surfaces nested-function-level detail, not just the outer function."
+    },
+    {
+      "query_id": "q20",
+      "question": "How does Click's pipe pager decide what text encoding to use when piping output to a pager program?",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "_termui_impl.py::_pipepager", "filepath": "_termui_impl.py", "start_line": 470, "end_line": 576},
+        {"node_id": "_compat.py::get_best_encoding", "filepath": "_compat.py", "start_line": 51, "end_line": 56},
+        {"node_id": "_compat.py::is_ascii_encoding", "filepath": "_compat.py", "start_line": 43, "end_line": 48}
+      ],
+      "notes": "Origin file _termui_impl.py, distinct from the decorators/exceptions/formatting cluster used elsewhere in this batch."
+    },
+    {
+      "query_id": "q21",
+      "question": "How does Click's text wrapper measure line length when wrapping help text that contains ANSI color codes?",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "_textwrap.py::TextWrapper._wrap_chunks", "filepath": "_textwrap.py", "start_line": 66, "end_line": 162},
+        {"node_id": "_compat.py::term_len", "filepath": "_compat.py", "start_line": 536, "end_line": 537},
+        {"node_id": "_compat.py::strip_ansi", "filepath": "_compat.py", "start_line": 491, "end_line": 492}
+      ],
+      "notes": "_textwrap.py is click's vendored/adapted textwrap module - a good test of whether retrieval treats it as click-specific code rather than skipping it as boilerplate."
+    },
+    {
+      "query_id": "q22",
+      "question": "On Windows, how does Click wrap stdin so it behaves like a normal non-closing text stream?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "_winconsole.py::_get_text_stdin", "filepath": "_winconsole.py", "start_line": 227, "end_line": 234},
+        {"node_id": "_compat.py::_NonClosingTextIOWrapper", "filepath": "_compat.py", "start_line": 59, "end_line": 82}
+      ],
+      "notes": "_winconsole.py is Windows-specific and likely underrepresented in a general semantic query about 'stdin wrapping' unless graph expansion pulls it in."
+    },
+    {
+      "query_id": "q23",
+      "question": "What color-related context does a ClickException look up when it's first constructed?",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "exceptions.py::ClickException.__init__", "filepath": "exceptions.py", "start_line": 44, "end_line": 49},
+        {"node_id": "globals.py::resolve_color_default", "filepath": "globals.py", "start_line": 54, "end_line": 67},
+        {"node_id": "globals.py::get_current_context", "filepath": "globals.py", "start_line": 20, "end_line": 41}
+      ],
+      "notes": "Exception construction reaching into the global context stack - a non-obvious dependency likely missed by semantic-only, which would focus on exception-related vocabulary rather than context/color resolution."
+    },
+    {
+      "query_id": "q24",
+      "question": "How does Click determine the correct encoding when converting a raw string argument from sys.argv?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "types.py::StringParamType.convert", "filepath": "types.py", "start_line": 296, "end_line": 312},
+        {"node_id": "_compat.py::_get_argv_encoding", "filepath": "_compat.py", "start_line": 527, "end_line": 528}
+      ],
+      "notes": "types.py to _compat.py; tests a short, easily-missed helper function reached from a much larger convert() method."
+    },
+    {
+      "query_id": "q25",
+      "question": "How does Click's Bash shell completion check whether the installed Bash version is recent enough, and what does it print to the user?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "shell_completion.py::BashComplete._check_version", "filepath": "shell_completion.py", "start_line": 396, "end_line": 426},
+        {"node_id": "utils.py::echo", "filepath": "utils.py", "start_line": 252, "end_line": 346}
+      ],
+      "notes": "Second and final echo-hub-centered query allowed across the full benchmark (batch1 q06 was the first). Origin is shell_completion.py, distinct topic (Bash version checking) from q06's ANSI-stripping focus, so the two echo queries are not redundant with each other."
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "repo": "click",
+    "pinned_commit": "9c4dfdaebe0e6b2aabc566eb81f6f10eb5cd6ea1",
+    "batch": 3,
+    "notes": "This batch was originally planned as ~5 queries (1 three-hop + several 'import-based' queries) but investigation showed that in click, cross-file calls edges and imports edges are almost entirely coextensive -- an import-backed function-level call search against exceptions.py/formatting.py/decorators.py/shell_completion.py returned 22 pairs, of which all but one were already covered by batch1/batch2 queries. Only one genuinely new, non-redundant pair was found (formatting.py::wrap_text -> _textwrap.py::TextWrapper), and it is included here as q27. No separate 'import-relationship' query category was created, since it would not have tested a distinct retrieval mechanism from the calls-based queries already in the benchmark. This batch therefore contains 2 queries, not 5, in the interest of not padding the dataset with near-duplicate ground truth for the sake of a round total query count."
+  },
+  "queries": [
+    {
+      "query_id": "q26",
+      "question": "When Click prompts a user for confirmation and then echoes output, what determines whether ANSI codes survive in that output?",
+      "category": "cross_file_3hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "core.py::Option.prompt_for_value", "filepath": "core.py", "start_line": 3467, "end_line": 3515},
+        {"node_id": "termui.py::confirm", "filepath": "termui.py", "start_line": 288, "end_line": 344},
+        {"node_id": "utils.py::echo", "filepath": "utils.py", "start_line": 252, "end_line": 346},
+        {"node_id": "_compat.py::should_strip_ansi", "filepath": "_compat.py", "start_line": 502, "end_line": 513}
+      ],
+      "notes": "Third and final echo-hub-centered query across the full 27-query benchmark. This is one of only 16 genuine 3-hop cross-file chains found in click's entire call graph, and ALL 16 of those chains funnel through utils.py::echo -- there is no non-echo 3-hop chain available in this codebase. This is a reportable structural finding, not a benchmark design gap: click's call graph is shallow, and deep multi-hop retrieval is only exercised through a single central utility function in practice."
+    },
+    {
+      "query_id": "q27",
+      "question": "How does Click wrap long help text into multiple lines, and what class actually implements the wrapping algorithm?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "formatting.py::wrap_text", "filepath": "formatting.py", "start_line": 31, "end_line": 107},
+        {"node_id": "_textwrap.py::TextWrapper", "filepath": "_textwrap.py", "start_line": 38, "end_line": 188}
+      ],
+      "notes": "Target node is a class (TextWrapper), not a function/method -- the only query in the benchmark where the ground truth's cross-file target is a class definition rather than a function or method."
+    }
+  ]
+}

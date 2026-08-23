@@ -1,0 +1,137 @@
+{
+  "meta": {
+    "repo": "click",
+    "pinned_commit": "9c4dfdaebe0e6b2aabc566eb81f6f10eb5cd6ea1",
+    "graph_stats_at_construction": {
+      "nodes": 632,
+      "edges": 1093,
+      "edge_types": {"defines": 615, "imports": 65, "inherits": 30, "calls": 391},
+      "cross_file_calls": 113,
+      "cross_file_inherits": 0
+    },
+    "notes": "Click has zero cross-file inheritance edges (confirmed on full edge set, not a sample). All cross-file, multi-hop ground truth in this benchmark is therefore built on 'calls' edges only. This is a real architectural property of click, not a parser gap, and should be documented as such in the Phase 5 write-up.",
+    "category_definitions": {
+      "local_0hop": "Answer is fully contained in one function/file; graph expansion should add nothing.",
+      "cross_file_1hop": "Answer requires one additional file reached via a single calls edge from the top semantic hit.",
+      "cross_file_2hop": "Answer requires two hops via calls edges, typically crossing 2-3 files.",
+      "control": "Deliberately included case where semantic-only is expected to already succeed without graph help -- included to avoid biasing the benchmark toward hybrid, per project scope requirement to report both positive and negative cases."
+    }
+  },
+  "queries": [
+    {
+      "query_id": "q01",
+      "question": "What happens when Context.fail is called?",
+      "category": "local_0hop",
+      "expected_hybrid_advantage": false,
+      "ground_truth_nodes": [
+        {"node_id": "core.py::Context.fail", "filepath": "core.py", "start_line": 807, "end_line": 813},
+        {"node_id": "exceptions.py::UsageError", "filepath": "exceptions.py", "start_line": 68, "end_line": 111}
+      ],
+      "notes": "Cross-file by node location, but 'fail' and 'error' are lexically close, so semantic-only likely already surfaces UsageError without needing graph expansion."
+    },
+    {
+      "query_id": "q02",
+      "question": "How does Click handle shell completion when a command is invoked with the completion flag?",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "core.py::Command._main_shell_completion", "filepath": "core.py", "start_line": 1597, "end_line": 1627},
+        {"node_id": "shell_completion.py::shell_complete", "filepath": "shell_completion.py", "start_line": 19, "end_line": 55},
+        {"node_id": "shell_completion.py::get_completion_class", "filepath": "shell_completion.py", "start_line": 593, "end_line": 600}
+      ],
+      "notes": "Query wording centers on 'command'/'invoke'; the completion-class resolution logic is 2 hops away under different vocabulary."
+    },
+    {
+      "query_id": "q03",
+      "question": "What happens if a user aborts an interactive confirmation prompt in Click?",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "core.py::Option.prompt_for_value", "filepath": "core.py", "start_line": 3467, "end_line": 3515},
+        {"node_id": "termui.py::confirm", "filepath": "termui.py", "start_line": 288, "end_line": 344},
+        {"node_id": "exceptions.py::Abort", "filepath": "exceptions.py", "start_line": 362, "end_line": 363},
+        {"node_id": "termui.py::_readline_prompt", "filepath": "termui.py", "start_line": 84, "end_line": 104}
+      ],
+      "notes": "Multi-target 2-hop test: 'abort' is lexically close to exceptions.Abort, but reaching it requires the invocation path through confirm()."
+    },
+    {
+      "query_id": "q04",
+      "question": "How does Click's @pass_context decorator access the current context object?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "decorators.py::pass_context.new_func", "filepath": "decorators.py", "start_line": 33, "end_line": 34},
+        {"node_id": "globals.py::get_current_context", "filepath": "globals.py", "start_line": 20, "end_line": 41}
+      ],
+      "notes": "Decorator wrapper is thin; real logic is one hop away in a different file. Tests whether semantic-only stops at the wrapper."
+    },
+    {
+      "query_id": "q05",
+      "question": "How does the File parameter type open a file path into a readable/writable stream?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "types.py::File.convert", "filepath": "types.py", "start_line": 973, "end_line": 1016},
+        {"node_id": "_compat.py::open_stream", "filepath": "_compat.py", "start_line": 374, "end_line": 452}
+      ],
+      "notes": "'convert' vs 'open_stream' are lexically distant; real test of whether graph expansion recovers a structurally-connected but semantically-dissimilar function."
+    },
+    {
+      "query_id": "q06",
+      "question": "When Click prints output, how does it decide whether to strip ANSI color codes?",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "core.py::Command.invoke", "filepath": "core.py", "start_line": 1401, "end_line": 1415},
+        {"node_id": "utils.py::echo", "filepath": "utils.py", "start_line": 252, "end_line": 346},
+        {"node_id": "_compat.py::should_strip_ansi", "filepath": "_compat.py", "start_line": 502, "end_line": 513}
+      ],
+      "notes": "Deliberately the ONLY echo-hub-centered query in this batch (echo is called from many files -- capped to avoid inflating apparent hybrid performance via a single dominant hub node)."
+    },
+    {
+      "query_id": "q07",
+      "question": "How does Click resolve a subcommand name to its command object in a group, and what happens if the name doesn't match anything?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "core.py::Group.resolve_command", "filepath": "core.py", "start_line": 2066, "end_line": 2090},
+        {"node_id": "exceptions.py::NoSuchCommand", "filepath": "exceptions.py", "start_line": 268, "end_line": 301}
+      ],
+      "notes": "Two-part question (resolution + error case); the exception class lives in a different file than the resolution logic."
+    },
+    {
+      "query_id": "q08",
+      "question": "How does Click measure the visual length of a string for terminal formatting?",
+      "category": "control",
+      "expected_hybrid_advantage": false,
+      "ground_truth_nodes": [
+        {"node_id": "formatting.py::HelpFormatter.write_dl", "filepath": "formatting.py", "start_line": 229, "end_line": 271},
+        {"node_id": "_compat.py::term_len", "filepath": "_compat.py", "start_line": 536, "end_line": 537}
+      ],
+      "notes": "term_len is expected to be the top semantic hit on its own ('measure length of a string'), making graph expansion redundant. Included deliberately as an honest negative case, per project scope requirement not to assume graph retrieval is always better."
+    },
+    {
+      "query_id": "q09",
+      "question": "What color-related logic runs when Click styles command output text, and how does it detect the terminal's color capability?",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "core.py::Command.invoke", "filepath": "core.py", "start_line": 1401, "end_line": 1415},
+        {"node_id": "termui.py::style", "filepath": "termui.py", "start_line": 640, "end_line": 764},
+        {"node_id": "termui.py::_interpret_color", "filepath": "termui.py", "start_line": 615, "end_line": 637}
+      ],
+      "notes": "Deep chain from invoke() through style() to the internal color-interpretation helper."
+    },
+    {
+      "query_id": "q10",
+      "question": "What exception does Click raise for an invalid parameter value, and where is it defined?",
+      "category": "local_0hop",
+      "expected_hybrid_advantage": false,
+      "ground_truth_nodes": [
+        {"node_id": "types.py::ParamType.fail", "filepath": "types.py", "start_line": 204, "end_line": 211},
+        {"node_id": "exceptions.py::BadParameter", "filepath": "exceptions.py", "start_line": 114, "end_line": 156}
+      ],
+      "notes": "'invalid parameter' and BadParameter are lexically close; likely resolvable by semantic-only."
+    }
+  ]
+}
