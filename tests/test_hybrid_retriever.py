@@ -29,8 +29,8 @@ from config.settings import GRAPH_PATH
 
 # A node known (from manual Phase 3 testing) to have neighbors at hop 1, 2, and 3.
 # If this node ever gets removed/renamed by a repo re-parse, update this constant.
-KNOWN_MULTI_HOP_NODE = "click/parser.py::_OptionParser.parse_args"
 
+KNOWN_MULTI_HOP_NODE = "core.py::Command"
 TEST_QUESTIONS = [
     "how does click parse command line arguments",
     "how is the default value of an option determined",

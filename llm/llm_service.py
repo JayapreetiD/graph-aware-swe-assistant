@@ -47,7 +47,7 @@ MODEL_NAME = "gemini-3.6-flash"
 # 3072, truncation is possible and is now surfaced via
 # LLMResult.truncated rather than silently returned as a complete
 # answer - see generate_answer().
-MAX_OUTPUT_TOKENS = 3072
+MAX_OUTPUT_TOKENS = 8192
 
 
 @dataclass
