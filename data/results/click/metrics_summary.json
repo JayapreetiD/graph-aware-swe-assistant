@@ -1,0 +1,1254 @@
+{
+  "sample_size": {
+    "unique_pairs_with_attempt": 54,
+    "successful_pairs": 40,
+    "expected_total_pairs": 54,
+    "is_partial": true
+  },
+  "by_mode": {
+    "semantic": {
+      "total_queries": 27,
+      "successful_queries": 20,
+      "failed_queries": 7,
+      "mean_precision_at_k": 0.1591,
+      "mean_recall_at_k": 0.525,
+      "mrr": 0.5651,
+      "mean_grounding_accuracy": 0.5083,
+      "mean_citation_correctness_rate": 0.975,
+      "mean_latency_seconds": 13.4523
+    },
+    "hybrid": {
+      "total_queries": 27,
+      "successful_queries": 20,
+      "failed_queries": 7,
+      "mean_precision_at_k": 0.1696,
+      "mean_recall_at_k": 0.575,
+      "mrr": 0.5651,
+      "mean_grounding_accuracy": 0.4958,
+      "mean_citation_correctness_rate": 1.0,
+      "mean_latency_seconds": 11.2247
+    }
+  },
+  "by_category_and_mode": {
+    "local_0hop": {
+      "semantic": {
+        "total_queries": 3,
+        "successful_queries": 3,
+        "mean_precision_at_k": 0.1333,
+        "mean_recall_at_k": 0.6667,
+        "mrr": 0.5,
+        "mean_grounding_accuracy": 0.6667
+      },
+      "hybrid": {
+        "total_queries": 3,
+        "successful_queries": 3,
+        "mean_precision_at_k": 0.1333,
+        "mean_recall_at_k": 0.6667,
+        "mrr": 0.5,
+        "mean_grounding_accuracy": 0.5
+      }
+    },
+    "cross_file_2hop": {
+      "semantic": {
+        "total_queries": 10,
+        "successful_queries": 8,
+        "mean_precision_at_k": 0.1836,
+        "mean_recall_at_k": 0.4375,
+        "mrr": 0.6429,
+        "mean_grounding_accuracy": 0.375
+      },
+      "hybrid": {
+        "total_queries": 10,
+        "successful_queries": 8,
+        "mean_precision_at_k": 0.1836,
+        "mean_recall_at_k": 0.4375,
+        "mrr": 0.6429,
+        "mean_grounding_accuracy": 0.4062
+      }
+    },
+    "cross_file_1hop": {
+      "semantic": {
+        "total_queries": 12,
+        "successful_queries": 8,
+        "mean_precision_at_k": 0.1502,
+        "mean_recall_at_k": 0.5625,
+        "mrr": 0.5667,
+        "mean_grounding_accuracy": 0.5833
+      },
+      "hybrid": {
+        "total_queries": 12,
+        "successful_queries": 8,
+        "mean_precision_at_k": 0.1765,
+        "mean_recall_at_k": 0.6875,
+        "mrr": 0.5667,
+        "mean_grounding_accuracy": 0.5833
+      }
+    },
+    "control": {
+      "semantic": {
+        "total_queries": 1,
+        "successful_queries": 1,
+        "mean_precision_at_k": 0.1111,
+        "mean_recall_at_k": 0.5,
+        "mrr": 0.125,
+        "mean_grounding_accuracy": 0.5
+      },
+      "hybrid": {
+        "total_queries": 1,
+        "successful_queries": 1,
+        "mean_precision_at_k": 0.1111,
+        "mean_recall_at_k": 0.5,
+        "mrr": 0.125,
+        "mean_grounding_accuracy": 0.5
+      }
+    },
+    "cross_file_3hop": {
+      "semantic": {
+        "total_queries": 1,
+        "successful_queries": 0,
+        "mean_precision_at_k": null,
+        "mean_recall_at_k": null,
+        "mrr": null,
+        "mean_grounding_accuracy": null
+      },
+      "hybrid": {
+        "total_queries": 1,
+        "successful_queries": 0,
+        "mean_precision_at_k": null,
+        "mean_recall_at_k": null,
+        "mrr": null,
+        "mean_grounding_accuracy": null
+      }
+    }
+  },
+  "per_query": [
+    {
+      "query_id": "q01",
+      "mode": "semantic",
+      "category": "local_0hop",
+      "expected_hybrid_advantage": false,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.2,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.5,
+      "grounding_accuracy": 1.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 25.596,
+      "matched_ground_truth_ids": [
+        "core.py::Context.fail",
+        "exceptions.py::UsageError"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q01",
+      "mode": "hybrid",
+      "category": "local_0hop",
+      "expected_hybrid_advantage": false,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.2,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.5,
+      "grounding_accuracy": 0.5,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 12.729,
+      "matched_ground_truth_ids": [
+        "core.py::Context.fail",
+        "exceptions.py::UsageError"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q02",
+      "mode": "semantic",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 8,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.25,
+      "recall_at_k": 0.6667,
+      "reciprocal_rank": 0.5,
+      "grounding_accuracy": 0.6667,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 15.546,
+      "matched_ground_truth_ids": [
+        "core.py::Command._main_shell_completion",
+        "shell_completion.py::shell_complete"
+      ],
+      "unmatched_ground_truth_ids": [
+        "shell_completion.py::get_completion_class"
+      ]
+    },
+    {
+      "query_id": "q02",
+      "mode": "hybrid",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 8,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.25,
+      "recall_at_k": 0.6667,
+      "reciprocal_rank": 0.5,
+      "grounding_accuracy": 0.6667,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 10.402,
+      "matched_ground_truth_ids": [
+        "core.py::Command._main_shell_completion",
+        "shell_completion.py::shell_complete"
+      ],
+      "unmatched_ground_truth_ids": [
+        "shell_completion.py::get_completion_class"
+      ]
+    },
+    {
+      "query_id": "q03",
+      "mode": "semantic",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 5,
+      "ground_truth_count": 4,
+      "precision_at_k": 0.4,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 19.405,
+      "matched_ground_truth_ids": [
+        "core.py::Option.prompt_for_value",
+        "termui.py::confirm"
+      ],
+      "unmatched_ground_truth_ids": [
+        "exceptions.py::Abort",
+        "termui.py::_readline_prompt"
+      ]
+    },
+    {
+      "query_id": "q03",
+      "mode": "hybrid",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 5,
+      "ground_truth_count": 4,
+      "precision_at_k": 0.4,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.25,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 6.991,
+      "matched_ground_truth_ids": [
+        "core.py::Option.prompt_for_value",
+        "termui.py::confirm"
+      ],
+      "unmatched_ground_truth_ids": [
+        "exceptions.py::Abort",
+        "termui.py::_readline_prompt"
+      ]
+    },
+    {
+      "query_id": "q04",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1111,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 1.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 6.432,
+      "matched_ground_truth_ids": [
+        "globals.py::get_current_context"
+      ],
+      "unmatched_ground_truth_ids": [
+        "decorators.py::pass_context.new_func"
+      ]
+    },
+    {
+      "query_id": "q04",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.2222,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 1.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 6.012,
+      "matched_ground_truth_ids": [
+        "decorators.py::pass_context.new_func",
+        "globals.py::get_current_context"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q05",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 7,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1429,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.3333,
+      "grounding_accuracy": 1.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 21.292,
+      "matched_ground_truth_ids": [
+        "_compat.py::open_stream"
+      ],
+      "unmatched_ground_truth_ids": [
+        "types.py::File.convert"
+      ]
+    },
+    {
+      "query_id": "q05",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 7,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1429,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.3333,
+      "grounding_accuracy": 1.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 15.806,
+      "matched_ground_truth_ids": [
+        "_compat.py::open_stream"
+      ],
+      "unmatched_ground_truth_ids": [
+        "types.py::File.convert"
+      ]
+    },
+    {
+      "query_id": "q06",
+      "mode": "semantic",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.1,
+      "recall_at_k": 0.3333,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.3333,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 9.098,
+      "matched_ground_truth_ids": [
+        "_compat.py::should_strip_ansi"
+      ],
+      "unmatched_ground_truth_ids": [
+        "core.py::Command.invoke",
+        "utils.py::echo"
+      ]
+    },
+    {
+      "query_id": "q06",
+      "mode": "hybrid",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.1,
+      "recall_at_k": 0.3333,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.3333,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 10.587,
+      "matched_ground_truth_ids": [
+        "_compat.py::should_strip_ansi"
+      ],
+      "unmatched_ground_truth_ids": [
+        "core.py::Command.invoke",
+        "utils.py::echo"
+      ]
+    },
+    {
+      "query_id": "q07",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 8,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.25,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 1.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 11.897,
+      "matched_ground_truth_ids": [
+        "core.py::Group.resolve_command",
+        "exceptions.py::NoSuchCommand"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q07",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 8,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.25,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 1.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 11.807,
+      "matched_ground_truth_ids": [
+        "core.py::Group.resolve_command",
+        "exceptions.py::NoSuchCommand"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q08",
+      "mode": "semantic",
+      "category": "control",
+      "expected_hybrid_advantage": false,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1111,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.125,
+      "grounding_accuracy": 0.5,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 12.073,
+      "matched_ground_truth_ids": [
+        "_compat.py::term_len"
+      ],
+      "unmatched_ground_truth_ids": [
+        "formatting.py::HelpFormatter.write_dl"
+      ]
+    },
+    {
+      "query_id": "q08",
+      "mode": "hybrid",
+      "category": "control",
+      "expected_hybrid_advantage": false,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1111,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.125,
+      "grounding_accuracy": 0.5,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 8.376,
+      "matched_ground_truth_ids": [
+        "_compat.py::term_len"
+      ],
+      "unmatched_ground_truth_ids": [
+        "formatting.py::HelpFormatter.write_dl"
+      ]
+    },
+    {
+      "query_id": "q09",
+      "mode": "semantic",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 7,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.2857,
+      "recall_at_k": 0.6667,
+      "reciprocal_rank": 0.5,
+      "grounding_accuracy": 0.6667,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 24.38,
+      "matched_ground_truth_ids": [
+        "termui.py::_interpret_color",
+        "termui.py::style"
+      ],
+      "unmatched_ground_truth_ids": [
+        "core.py::Command.invoke"
+      ]
+    },
+    {
+      "query_id": "q09",
+      "mode": "hybrid",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 7,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.2857,
+      "recall_at_k": 0.6667,
+      "reciprocal_rank": 0.5,
+      "grounding_accuracy": 0.6667,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 14.832,
+      "matched_ground_truth_ids": [
+        "termui.py::_interpret_color",
+        "termui.py::style"
+      ],
+      "unmatched_ground_truth_ids": [
+        "core.py::Command.invoke"
+      ]
+    },
+    {
+      "query_id": "q10",
+      "mode": "semantic",
+      "category": "local_0hop",
+      "expected_hybrid_advantage": false,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.2,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 1.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 18.72,
+      "matched_ground_truth_ids": [
+        "exceptions.py::BadParameter",
+        "types.py::ParamType.fail"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q10",
+      "mode": "hybrid",
+      "category": "local_0hop",
+      "expected_hybrid_advantage": false,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.2,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 1.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 7.343,
+      "matched_ground_truth_ids": [
+        "exceptions.py::BadParameter",
+        "types.py::ParamType.fail"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q11",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 8,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0,
+      "grounding_accuracy": 0.5,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 7.348,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "decorators.py::pass_obj.new_func",
+        "globals.py::get_current_context"
+      ]
+    },
+    {
+      "query_id": "q11",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 8,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0,
+      "grounding_accuracy": 0.5,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 7.146,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "decorators.py::pass_obj.new_func",
+        "globals.py::get_current_context"
+      ]
+    },
+    {
+      "query_id": "q12",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.2,
+      "grounding_accuracy": 0.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 11.45,
+      "matched_ground_truth_ids": [
+        "utils.py::format_filename"
+      ],
+      "unmatched_ground_truth_ids": [
+        "exceptions.py::FileError.__init__"
+      ]
+    },
+    {
+      "query_id": "q12",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.2,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 0.2,
+      "grounding_accuracy": 0.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 15.133,
+      "matched_ground_truth_ids": [
+        "exceptions.py::FileError.__init__",
+        "utils.py::format_filename"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q13",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0,
+      "grounding_accuracy": 0.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 11.649,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "formatting.py::join_options",
+        "parser.py::_split_opt"
+      ]
+    },
+    {
+      "query_id": "q13",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0,
+      "grounding_accuracy": 0.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 13.191,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "formatting.py::join_options",
+        "parser.py::_split_opt"
+      ]
+    },
+    {
+      "query_id": "q14",
+      "mode": "semantic",
+      "category": "local_0hop",
+      "expected_hybrid_advantage": false,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0,
+      "grounding_accuracy": 0.0,
+      "citation_correctness_rate": 0.5,
+      "latency_seconds": 7.662,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "exceptions.py::BadArgumentUsage",
+        "parser.py::_Argument.process"
+      ]
+    },
+    {
+      "query_id": "q14",
+      "mode": "hybrid",
+      "category": "local_0hop",
+      "expected_hybrid_advantage": false,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0,
+      "grounding_accuracy": 0.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 8.582,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "exceptions.py::BadArgumentUsage",
+        "parser.py::_Argument.process"
+      ]
+    },
+    {
+      "query_id": "q15",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 8,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.375,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.6667,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 9.333,
+      "matched_ground_truth_ids": [
+        "exceptions.py::BadOptionUsage",
+        "exceptions.py::NoSuchOption",
+        "parser.py::_OptionParser._match_long_opt"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q15",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 8,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.375,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.6667,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 11.031,
+      "matched_ground_truth_ids": [
+        "exceptions.py::BadOptionUsage",
+        "exceptions.py::NoSuchOption",
+        "parser.py::_OptionParser._match_long_opt"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q16",
+      "mode": "semantic",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 5,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0,
+      "grounding_accuracy": 0.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 11.301,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "termui.py::prompt",
+        "types.py::_guess_type",
+        "types.py::convert_type"
+      ]
+    },
+    {
+      "query_id": "q16",
+      "mode": "hybrid",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 5,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0,
+      "grounding_accuracy": 0.0,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 15.135,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "termui.py::prompt",
+        "types.py::_guess_type",
+        "types.py::convert_type"
+      ]
+    },
+    {
+      "query_id": "q17",
+      "mode": "semantic",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.1,
+      "recall_at_k": 0.3333,
+      "reciprocal_rank": 0.1429,
+      "grounding_accuracy": 0.3333,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 6.713,
+      "matched_ground_truth_ids": [
+        "testing.py::make_input_stream"
+      ],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::_find_binary_reader",
+        "_compat.py::_is_binary_reader"
+      ]
+    },
+    {
+      "query_id": "q17",
+      "mode": "hybrid",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 10,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.1,
+      "recall_at_k": 0.3333,
+      "reciprocal_rank": 0.1429,
+      "grounding_accuracy": 0.3333,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 14.745,
+      "matched_ground_truth_ids": [
+        "testing.py::make_input_stream"
+      ],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::_find_binary_reader",
+        "_compat.py::_is_binary_reader"
+      ]
+    },
+    {
+      "query_id": "q18",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.2222,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.5,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 10.829,
+      "matched_ground_truth_ids": [
+        "_compat.py::_AtomicFile",
+        "utils.py::_LazyFile.open"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q18",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.2222,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.5,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 11.86,
+      "matched_ground_truth_ids": [
+        "_compat.py::_AtomicFile",
+        "utils.py::_LazyFile.open"
+      ],
+      "unmatched_ground_truth_ids": []
+    },
+    {
+      "query_id": "q19",
+      "mode": "semantic",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.2222,
+      "recall_at_k": 0.6667,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.6667,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 15.338,
+      "matched_ground_truth_ids": [
+        "_termui_impl.py::open_url",
+        "termui.py::launch"
+      ],
+      "unmatched_ground_truth_ids": [
+        "_termui_impl.py::open_url._unquote_file"
+      ]
+    },
+    {
+      "query_id": "q19",
+      "mode": "hybrid",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.2222,
+      "recall_at_k": 0.6667,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.6667,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 13.699,
+      "matched_ground_truth_ids": [
+        "_termui_impl.py::open_url",
+        "termui.py::launch"
+      ],
+      "unmatched_ground_truth_ids": [
+        "_termui_impl.py::open_url._unquote_file"
+      ]
+    },
+    {
+      "query_id": "q20",
+      "mode": "semantic",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.1111,
+      "recall_at_k": 0.3333,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.3333,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 12.984,
+      "matched_ground_truth_ids": [
+        "_termui_impl.py::_pipepager"
+      ],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::get_best_encoding",
+        "_compat.py::is_ascii_encoding"
+      ]
+    },
+    {
+      "query_id": "q20",
+      "mode": "hybrid",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": true,
+      "k_retrieved": 9,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.1111,
+      "recall_at_k": 0.3333,
+      "reciprocal_rank": 1.0,
+      "grounding_accuracy": 0.3333,
+      "citation_correctness_rate": 1.0,
+      "latency_seconds": 9.087,
+      "matched_ground_truth_ids": [
+        "_termui_impl.py::_pipepager"
+      ],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::get_best_encoding",
+        "_compat.py::is_ascii_encoding"
+      ]
+    },
+    {
+      "query_id": "q21",
+      "mode": "semantic",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 3,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 64.476,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::strip_ansi",
+        "_compat.py::term_len",
+        "_textwrap.py::TextWrapper._wrap_chunks"
+      ]
+    },
+    {
+      "query_id": "q21",
+      "mode": "hybrid",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 3,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 112.409,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::strip_ansi",
+        "_compat.py::term_len",
+        "_textwrap.py::TextWrapper._wrap_chunks"
+      ]
+    },
+    {
+      "query_id": "q22",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 2,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 112.531,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::_NonClosingTextIOWrapper",
+        "_winconsole.py::_get_text_stdin"
+      ]
+    },
+    {
+      "query_id": "q22",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 2,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 113.264,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::_NonClosingTextIOWrapper",
+        "_winconsole.py::_get_text_stdin"
+      ]
+    },
+    {
+      "query_id": "q23",
+      "mode": "semantic",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 3,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 109.426,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "exceptions.py::ClickException.__init__",
+        "globals.py::get_current_context",
+        "globals.py::resolve_color_default"
+      ]
+    },
+    {
+      "query_id": "q23",
+      "mode": "hybrid",
+      "category": "cross_file_2hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 3,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 109.687,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "exceptions.py::ClickException.__init__",
+        "globals.py::get_current_context",
+        "globals.py::resolve_color_default"
+      ]
+    },
+    {
+      "query_id": "q24",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 2,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 2.034,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::_get_argv_encoding",
+        "types.py::StringParamType.convert"
+      ]
+    },
+    {
+      "query_id": "q24",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 2,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 2.033,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::_get_argv_encoding",
+        "types.py::StringParamType.convert"
+      ]
+    },
+    {
+      "query_id": "q25",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 2,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 2.027,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "shell_completion.py::BashComplete._check_version",
+        "utils.py::echo"
+      ]
+    },
+    {
+      "query_id": "q25",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 2,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 2.03,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "shell_completion.py::BashComplete._check_version",
+        "utils.py::echo"
+      ]
+    },
+    {
+      "query_id": "q26",
+      "mode": "semantic",
+      "category": "cross_file_3hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 4,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 2.047,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::should_strip_ansi",
+        "core.py::Option.prompt_for_value",
+        "termui.py::confirm",
+        "utils.py::echo"
+      ]
+    },
+    {
+      "query_id": "q26",
+      "mode": "hybrid",
+      "category": "cross_file_3hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 4,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 2.045,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "_compat.py::should_strip_ansi",
+        "core.py::Option.prompt_for_value",
+        "termui.py::confirm",
+        "utils.py::echo"
+      ]
+    },
+    {
+      "query_id": "q27",
+      "mode": "semantic",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 2,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 2.027,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "_textwrap.py::TextWrapper",
+        "formatting.py::wrap_text"
+      ]
+    },
+    {
+      "query_id": "q27",
+      "mode": "hybrid",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "success": false,
+      "k_retrieved": 0,
+      "ground_truth_count": 2,
+      "precision_at_k": null,
+      "recall_at_k": null,
+      "reciprocal_rank": null,
+      "grounding_accuracy": null,
+      "citation_correctness_rate": null,
+      "latency_seconds": 2.056,
+      "matched_ground_truth_ids": [],
+      "unmatched_ground_truth_ids": [
+        "_textwrap.py::TextWrapper",
+        "formatting.py::wrap_text"
+      ]
+    }
+  ]
+}

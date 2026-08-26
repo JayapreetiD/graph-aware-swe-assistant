@@ -277,7 +277,15 @@ def _post_query_once(
         return {}, None, latency, f"Request failed: {e}"
 
     if resp.status_code != 200:
-        return {}, resp.status_code, latency, f"HTTP {resp.status_code}: {resp.text[:500]}"
+        # Truncated to 2000 chars, not 500 -- the daily-quota error body's
+        # 'quotaId' field (which _is_daily_quota_exhausted looks for) sits
+        # past character 500 in Gemini's actual error JSON. At 500 chars
+        # the truncation silently cut it off, so the fail-fast daily-quota
+        # check never fired and every daily-exhaustion error was
+        # misclassified as a retryable rate limit instead -- confirmed
+        # empirically: a live run kept retrying for ~50 minutes across
+        # many queries instead of stopping on the first daily-quota error.
+        return {}, resp.status_code, latency, f"HTTP {resp.status_code}: {resp.text[:2000]}"
 
     try:
         return resp.json(), resp.status_code, latency, ""
