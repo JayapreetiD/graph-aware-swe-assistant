@@ -254,11 +254,19 @@ def _post_query_once(
     base_url: str,
     question: str,
     mode: str,
+    hop_depth: int | None = None,
 ) -> tuple[dict[str, Any], int | None, float, str]:
     """Single HTTP attempt, no retry logic. Returns (response_json,
-    http_status, latency_seconds, error_message)."""
+    http_status, latency_seconds, error_message).
+
+    hop_depth is optional and, when None, is simply omitted from the
+    payload -- the API defaults to hop_depth=2 in that case, identical to
+    every call the main 27-query benchmark makes. Only ablation mode ever
+    passes hop_depth explicitly."""
     url = f"{base_url.rstrip('/')}/query"
-    payload = {"question": question, "mode": mode}
+    payload: dict[str, Any] = {"question": question, "mode": mode}
+    if hop_depth is not None:
+        payload["hop_depth"] = hop_depth
 
     start = time.monotonic()
     try:
@@ -288,6 +296,7 @@ def run_single_query(
     base_url: str,
     question: str,
     mode: str,
+    hop_depth: int | None = None,
 ) -> tuple[dict[str, Any], int | None, float, str]:
     """
     POST one query to /query, retrying on short-lived rate-limit errors
@@ -312,7 +321,7 @@ def run_single_query(
 
     for attempt in range(1, MAX_RETRIES_PER_CALL + 1):
         response_json, http_status, latency, error = _post_query_once(
-            base_url, question, mode
+            base_url, question, mode, hop_depth=hop_depth
         )
         total_latency = latency + total_wait
 
@@ -451,6 +460,280 @@ def run_benchmark(
     logger.info("Benchmark run complete. Results appended to %s", output_path)
 
 
+ABLATION_QUERIES_PATH = Path("data/benchmarks/click_ablation_queries.json")
+ABLATION_OUTPUT_PATH = Path("data/results/click/ablation_results.jsonl")
+ABLATION_HOP_DEPTHS = (0, 1, 2, 3)
+
+# hop_depth=2 is the retriever's own hard-coded default (see
+# retrieval/hybrid_retriever.py: `hop_depth: int = 2`) and, before the
+# hop_depth pass-through fix landed in api/main.py, EVERY hybrid call ever
+# made went through that default with no way to override it. So a
+# pre-fix successful hybrid result IS, as a matter of fact about what the
+# code did, a hop_depth=2 result -- even though the saved JSON for that
+# call has no hop_depth field recorded, because the field didn't exist
+# yet. That's a real distinction from a post-fix record that explicitly
+# states hop_depth=2 in the response. Both are used for reuse, but they
+# are labeled differently so this assumption is visible and can be
+# independently checked, not silently asserted.
+REUSE_CONFIDENCE_EXPLICIT = "explicit_hop2"
+REUSE_CONFIDENCE_LEGACY = "legacy_default_hop2"
+
+
+@dataclass
+class AblationQuery:
+    """One query loaded from data/benchmarks/click_ablation_queries.json."""
+
+    query_id: str
+    question: str
+    category: str
+    source_batch: str
+    ground_truth_nodes: list[dict[str, Any]]
+
+
+@dataclass
+class AblationResult:
+    """Raw outcome of running one query at one hop_depth in hybrid mode."""
+
+    query_id: str
+    hop_depth: int
+    question: str
+    category: str
+    ground_truth_nodes: list[dict[str, Any]]
+    success: bool
+    http_status: int | None = None
+    latency_seconds: float | None = None
+    answer: str = ""
+    truncated: bool | None = None
+    chunks_used: list[dict[str, Any]] = field(default_factory=list)
+    citations: list[dict[str, Any]] = field(default_factory=list)
+    citation_correctness_rate: float | None = None
+    error: str = ""
+    timestamp: str = ""
+    reused_from_main_benchmark: bool = False
+    reuse_confidence: str = ""  # "" if not reused; else one of the REUSE_CONFIDENCE_* constants
+
+
+def load_ablation_queries(path: Path) -> list[AblationQuery]:
+    if not path.exists():
+        raise FileNotFoundError(f"{path} not found.")
+    with path.open(encoding="utf-8") as f:
+        data = json.load(f)
+    return [
+        AblationQuery(
+            query_id=q["query_id"],
+            question=q["question"],
+            category=q.get("category", "unknown"),
+            source_batch=q.get("source_batch", ""),
+            ground_truth_nodes=q.get("ground_truth_nodes", []),
+        )
+        for q in data.get("queries", [])
+    ]
+
+
+def find_reusable_hop2_result(
+    query_id: str,
+    main_benchmark_records: list[dict[str, Any]],
+) -> tuple[dict[str, Any] | None, str]:
+    """
+    Look for an existing successful hybrid result for query_id in the
+    MAIN benchmark's results (never written to by ablation mode -- this
+    is read-only). Returns (record_or_None, confidence_label).
+
+    Reuse rules, deliberately conservative:
+      - If a matching record exists and has an explicit 'hop_depth' field:
+          - equals 2 -> reusable, REUSE_CONFIDENCE_EXPLICIT
+          - anything else -> NOT reusable (it was explicitly run at a
+            different depth; silently treating it as hop=2 would be wrong)
+      - If a matching record exists with NO 'hop_depth' field at all
+        (pre-fix record) -> reusable, REUSE_CONFIDENCE_LEGACY (see the
+        module-level comment above for why this is a factual inference
+        about the code's old default, not a guess about the data)
+      - If multiple matching records exist (e.g. retried across days),
+        the LAST one in file order is used, consistent with the
+        dedup-latest-wins rule used elsewhere in this project.
+      - If no successful hybrid record exists at all -> (None, "")
+    """
+    matches = [
+        r for r in main_benchmark_records
+        if r.get("query_id") == query_id
+        and r.get("mode") == "hybrid"
+        and r.get("success")
+    ]
+    if not matches:
+        return None, ""
+
+    record = matches[-1]  # latest wins
+
+    if "hop_depth" in record:
+        if record["hop_depth"] == 2:
+            return record, REUSE_CONFIDENCE_EXPLICIT
+        return None, ""  # explicitly a different depth -- do not reuse
+
+    # No hop_depth field at all -> pre-fix record -> known to have run at
+    # the retriever's unchanged default of 2.
+    return record, REUSE_CONFIDENCE_LEGACY
+
+
+def load_completed_ablation_pairs(output_path: Path) -> set[tuple[str, int]]:
+    """Same purpose as load_completed_pairs() but keyed on
+    (query_id, hop_depth) instead of (query_id, mode), since hop_depth is
+    the varying dimension in ablation mode, not mode (which is always
+    'hybrid' here)."""
+    if not output_path.exists():
+        return set()
+
+    completed: set[tuple[str, int]] = set()
+    with output_path.open(encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if record.get("success"):
+                completed.add((record["query_id"], record["hop_depth"]))
+    return completed
+
+
+def run_ablation(
+    queries: list[AblationQuery],
+    base_url: str,
+    output_path: Path,
+    main_benchmark_results_path: Path,
+) -> None:
+    """
+    For each query, for each hop_depth in ABLATION_HOP_DEPTHS: reuse an
+    existing hop=2 hybrid result if one is safely available (see
+    find_reusable_hop2_result), otherwise make a fresh API call with
+    hop_depth explicitly set. Results are appended incrementally to
+    output_path, exactly like run_benchmark() -- this NEVER writes to
+    main_benchmark_results_path, only reads it for the reuse check.
+    """
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    completed_pairs = load_completed_ablation_pairs(output_path)
+
+    main_records: list[dict[str, Any]] = []
+    if main_benchmark_results_path.exists():
+        with main_benchmark_results_path.open(encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    main_records.append(json.loads(line))
+
+    total_calls = len(queries) * len(ABLATION_HOP_DEPTHS)
+    logger.info(
+        "Starting ABLATION run: %d queries x %d hop depths = %d slots "
+        "(some may be satisfied by reuse rather than a fresh call)",
+        len(queries), len(ABLATION_HOP_DEPTHS), total_calls,
+    )
+
+    call_num = 0
+    for query in queries:
+        for hop_depth in ABLATION_HOP_DEPTHS:
+            call_num += 1
+
+            if (query.query_id, hop_depth) in completed_pairs:
+                logger.info(
+                    "[%d/%d] SKIP %s / hop=%d (already completed)",
+                    call_num, total_calls, query.query_id, hop_depth,
+                )
+                continue
+
+            reused_record = None
+            reuse_confidence = ""
+            if hop_depth == 2:
+                reused_record, reuse_confidence = find_reusable_hop2_result(
+                    query.query_id, main_records
+                )
+
+            if reused_record is not None:
+                logger.info(
+                    "[%d/%d] REUSE %s / hop=2 from main benchmark (confidence=%s)",
+                    call_num, total_calls, query.query_id, reuse_confidence,
+                )
+                result = AblationResult(
+                    query_id=query.query_id,
+                    hop_depth=2,
+                    question=query.question,
+                    category=query.category,
+                    ground_truth_nodes=query.ground_truth_nodes,
+                    success=True,
+                    http_status=reused_record.get("http_status"),
+                    latency_seconds=reused_record.get("latency_seconds"),
+                    answer=reused_record.get("answer", ""),
+                    truncated=reused_record.get("truncated"),
+                    chunks_used=reused_record.get("chunks_used", []),
+                    citations=reused_record.get("citations", []),
+                    citation_correctness_rate=reused_record.get("citation_correctness_rate"),
+                    error="",
+                    timestamp=time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    reused_from_main_benchmark=True,
+                    reuse_confidence=reuse_confidence,
+                )
+                with output_path.open("a", encoding="utf-8") as f:
+                    f.write(json.dumps(asdict(result)) + "\n")
+                continue
+
+            logger.info(
+                "[%d/%d] Running %s / hop=%d: %r",
+                call_num, total_calls, query.query_id, hop_depth, query.question,
+            )
+
+            try:
+                response_json, http_status, latency, error = run_single_query(
+                    base_url, query.question, "hybrid", hop_depth=hop_depth
+                )
+            except DailyQuotaExhausted as e:
+                logger.error(
+                    "Free-tier DAILY quota exhausted (query %s / hop=%d). "
+                    "Stopping ablation run here. Progress so far is saved "
+                    "in %s -- re-run with --ablation tomorrow to continue.",
+                    query.query_id, hop_depth, output_path,
+                )
+                logger.error("Underlying error: %s", e)
+                return
+
+            success = not error and http_status == 200
+
+            result = AblationResult(
+                query_id=query.query_id,
+                hop_depth=hop_depth,
+                question=query.question,
+                category=query.category,
+                ground_truth_nodes=query.ground_truth_nodes,
+                success=success,
+                http_status=http_status,
+                latency_seconds=round(latency, 3),
+                answer=response_json.get("answer", ""),
+                truncated=response_json.get("truncated"),
+                chunks_used=response_json.get("chunks_used", []),
+                citations=response_json.get("citations", []),
+                citation_correctness_rate=response_json.get("citation_correctness_rate"),
+                error=error,
+                timestamp=time.strftime("%Y-%m-%dT%H:%M:%S"),
+                reused_from_main_benchmark=False,
+                reuse_confidence="",
+            )
+
+            with output_path.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(asdict(result)) + "\n")
+
+            if success:
+                logger.info(
+                    "  -> OK (%.1fs, truncated=%s, citation_correctness=%s)",
+                    latency, result.truncated, result.citation_correctness_rate,
+                )
+            else:
+                logger.error("  -> FAILED: %s", error)
+
+            if call_num < total_calls:
+                time.sleep(SECONDS_BETWEEN_CALLS)
+
+    logger.info("Ablation run complete. Results appended to %s", output_path)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run Phase 5 benchmark queries against the live /query API."
@@ -485,11 +768,35 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="If set, only run the first N queries (dry run). Omit for full run.",
     )
+    parser.add_argument(
+        "--ablation",
+        action="store_true",
+        help=(
+            "Run the hop-depth ablation (0/1/2/3) on the small dedicated "
+            f"query set at {ABLATION_QUERIES_PATH} instead of the main "
+            "27-query benchmark. Reuses existing hop=2 hybrid results "
+            "from the main benchmark where safely possible (see "
+            "find_reusable_hop2_result). Never modifies the main "
+            "benchmark's query files or results."
+        ),
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
+
+    if args.ablation:
+        queries = load_ablation_queries(ABLATION_QUERIES_PATH)
+        logger.info("Loaded %d ablation queries from %s", len(queries), ABLATION_QUERIES_PATH)
+        run_ablation(
+            queries=queries,
+            base_url=args.base_url,
+            output_path=ABLATION_OUTPUT_PATH,
+            main_benchmark_results_path=args.output,
+        )
+        return
+
     modes = tuple(m.strip() for m in args.modes.split(",") if m.strip())
 
     queries = load_queries(args.benchmarks_dir)

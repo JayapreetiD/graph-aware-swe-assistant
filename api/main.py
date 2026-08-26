@@ -70,6 +70,7 @@ class QueryRequest(BaseModel):
     question: str
     mode: Literal["semantic", "hybrid"] = "hybrid"
     top_k: int = 10  # used only for semantic mode
+    hop_depth: int = 2  # used only for hybrid mode; ignored for semantic
 
 
 class ChunkOut(BaseModel):
@@ -93,6 +94,7 @@ class CitationOut(BaseModel):
 class QueryResponse(BaseModel):
     question: str
     mode: str
+    hop_depth: int | None = None  # echoed back so ablation runs are traceable to the depth that produced them; None for semantic mode
     answer: str
     truncated: bool
     chunks_used: list[ChunkOut]
@@ -110,7 +112,7 @@ def query(req: QueryRequest) -> QueryResponse:
     if req.mode == "semantic":
         chunks = _state["semantic_retriever"].retrieve(req.question, top_k=req.top_k)
     else:
-        chunks = _state["hybrid_retriever"].retrieve(req.question)
+        chunks = _state["hybrid_retriever"].retrieve(req.question, hop_depth=req.hop_depth)
 
     if not chunks:
         raise HTTPException(
@@ -137,6 +139,7 @@ def query(req: QueryRequest) -> QueryResponse:
     return QueryResponse(
         question=req.question,
         mode=req.mode,
+        hop_depth=req.hop_depth if req.mode == "hybrid" else None,
         answer=llm_result.answer,
         truncated=llm_result.truncated,
         chunks_used=[

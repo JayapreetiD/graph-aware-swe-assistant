@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "repo": "click",
+    "pinned_commit": "9c4dfdaebe0e6b2aabc566eb81f6f10eb5cd6ea1",
+    "purpose": "Focused hop-depth ablation (0/1/2/3) on a deliberately small, quota-realistic subset of the main 27-query benchmark, per project scope's hop-depth ablation requirement. This is NOT a replacement for or modification of the main benchmark -- click_queries_batch1/2/3.json and benchmark_results.jsonl are untouched by this file and by ablation mode.",
+    "selection_rationale": "6 queries chosen to span cross_file_1hop (q05, q13), cross_file_2hop (q02, q09, q19), and the ONLY cross_file_3hop query that exists in this benchmark (q26). local_0hop/control queries are excluded from the ablation on purpose: their ground truth doesn't require any graph traversal, so varying hop_depth has no reason to change their outcome, and including them would just spend quota without adding ablation signal.",
+    "ground_truth_source": "Copied verbatim from click_queries_batch1.json and click_queries_batch2.json and click_queries_batch3.json -- not re-derived. query_id here matches the original query_id so results can be cross-referenced against the main benchmark by ID.",
+    "reuse_policy": "hop_depth=2 for these queries MAY be satisfied by an existing successful hybrid result in benchmark_results.jsonl, since the hybrid retriever's hop_depth default has always been 2. See benchmark.py's find_reusable_hop2_result() for the exact matching rules and the explicit_hop2 / legacy_default_hop2 confidence labels applied to any reused record. hop_depth 0, 1, and 3 are never reused -- they require fresh API calls."
+  },
+  "queries": [
+    {
+      "query_id": "q05",
+      "question": "How does the File parameter type open a file path into a readable/writable stream?",
+      "category": "cross_file_1hop",
+      "source_batch": "click_queries_batch1.json",
+      "ground_truth_nodes": [
+        {"node_id": "types.py::File.convert", "filepath": "types.py", "start_line": 973, "end_line": 1016},
+        {"node_id": "_compat.py::open_stream", "filepath": "_compat.py", "start_line": 374, "end_line": 452}
+      ]
+    },
+    {
+      "query_id": "q13",
+      "question": "How does Click format the list of option flags shown in help text, like '-v, --verbose'?",
+      "category": "cross_file_1hop",
+      "source_batch": "click_queries_batch2.json",
+      "ground_truth_nodes": [
+        {"node_id": "formatting.py::join_options", "filepath": "formatting.py", "start_line": 302, "end_line": 320},
+        {"node_id": "parser.py::_split_opt", "filepath": "parser.py", "start_line": 111, "end_line": 117}
+      ]
+    },
+    {
+      "query_id": "q02",
+      "question": "How does Click handle shell completion when a command is invoked with the completion flag?",
+      "category": "cross_file_2hop",
+      "source_batch": "click_queries_batch1.json",
+      "ground_truth_nodes": [
+        {"node_id": "core.py::Command._main_shell_completion", "filepath": "core.py", "start_line": 1597, "end_line": 1627},
+        {"node_id": "shell_completion.py::shell_complete", "filepath": "shell_completion.py", "start_line": 19, "end_line": 55},
+        {"node_id": "shell_completion.py::get_completion_class", "filepath": "shell_completion.py", "start_line": 593, "end_line": 600}
+      ]
+    },
+    {
+      "query_id": "q09",
+      "question": "What color-related logic runs when Click styles command output text, and how does it detect the terminal's color capability?",
+      "category": "cross_file_2hop",
+      "source_batch": "click_queries_batch1.json",
+      "ground_truth_nodes": [
+        {"node_id": "core.py::Command.invoke", "filepath": "core.py", "start_line": 1401, "end_line": 1415},
+        {"node_id": "termui.py::style", "filepath": "termui.py", "start_line": 640, "end_line": 764},
+        {"node_id": "termui.py::_interpret_color", "filepath": "termui.py", "start_line": 615, "end_line": 637}
+      ]
+    },
+    {
+      "query_id": "q19",
+      "question": "How does Click's launch() function open a URL or file in the user's default application, and how does it handle quoting file paths?",
+      "category": "cross_file_2hop",
+      "source_batch": "click_queries_batch2.json",
+      "ground_truth_nodes": [
+        {"node_id": "termui.py::launch", "filepath": "termui.py", "start_line": 902, "end_line": 928},
+        {"node_id": "_termui_impl.py::open_url", "filepath": "_termui_impl.py", "start_line": 772, "end_line": 839},
+        {"node_id": "_termui_impl.py::open_url._unquote_file", "filepath": "_termui_impl.py", "start_line": 775, "end_line": 781}
+      ]
+    },
+    {
+      "query_id": "q26",
+      "question": "When Click prompts a user for confirmation and then echoes output, what determines whether ANSI codes survive in that output?",
+      "category": "cross_file_3hop",
+      "source_batch": "click_queries_batch3.json",
+      "ground_truth_nodes": [
+        {"node_id": "core.py::Option.prompt_for_value", "filepath": "core.py", "start_line": 3467, "end_line": 3515},
+        {"node_id": "termui.py::confirm", "filepath": "termui.py", "start_line": 288, "end_line": 344},
+        {"node_id": "utils.py::echo", "filepath": "utils.py", "start_line": 252, "end_line": 346},
+        {"node_id": "_compat.py::should_strip_ansi", "filepath": "_compat.py", "start_line": 502, "end_line": 513}
+      ]
+    }
+  ]
+}
