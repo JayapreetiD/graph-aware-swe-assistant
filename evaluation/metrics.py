@@ -195,8 +195,17 @@ def compute_query_metrics(record: dict[str, Any]) -> QueryMetrics:
             break
 
     # Grounding accuracy: does the answer's citations actually cover the
-    # ground-truth nodes, by file + overlapping line range?
-    citations = record.get("citations", [])
+    # ground-truth nodes, by file + overlapping line range? Only citations
+    # the API already validated (is_valid=True) count -- an invalid
+    # citation (e.g. a malformed or oversized line range that doesn't
+    # correspond to any real retrieved chunk) must not be allowed to
+    # spuriously "cover" a ground-truth node just because its range is
+    # wide. Confirmed empirically: q14/semantic had a citation
+    # "(exceptions.py:35-359)" flagged is_valid=False for
+    # line_range_mismatch, and without this filter its huge range
+    # accidentally overlapped a real ground-truth node, inflating that
+    # query's grounding score from 0.0 to 0.5.
+    citations = [c for c in record.get("citations", []) if c.get("is_valid")]
     grounding_accuracy = None
     if ground_truth_count > 0:
         grounded_count = 0
