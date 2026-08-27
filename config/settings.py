@@ -23,7 +23,7 @@ REPOS = {
         "vector_db_path": "data/vectors/click/qdrant_db",
     },
     "django": {
-        "repo_root": Path.home() / "repos" / "target-medium",
+        "repo_root": Path.home() / "repos" / "target-medium-full" / "django",
         "graph_path": "data/graph/django/graph.gpickle",
         "vector_db_path": "data/vectors/django/qdrant_db",
     },
