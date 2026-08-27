@@ -176,7 +176,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
     from config.settings import GRAPH_PATH, REPO_ROOT, ACTIVE_REPO
-    REPO_ROOT = Path.home() / "repos" / "target-small"/ "src" / "click"
+
     OUTPUT_PATH = f"data/chunks/{ACTIVE_REPO}/chunks.json"
 
     graph = load_graph(GRAPH_PATH)
