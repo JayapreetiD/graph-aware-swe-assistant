@@ -39,6 +39,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 DEFAULT_RESULTS_PATH = Path("data/results/click/benchmark_results.jsonl")
+DEFAULT_ABLATION_RESULTS_PATH = Path("data/results/click/ablation_results.jsonl")
 DEFAULT_SUMMARY_PATH = Path("data/results/click/metrics_summary.json")
 
 
@@ -133,49 +134,26 @@ def _ranges_overlap(
     return a_start <= b_end and b_start <= a_end
 
 
-def compute_query_metrics(record: dict[str, Any]) -> QueryMetrics:
+def _score_retrieval(
+    chunks_used: list[dict[str, Any]],
+    ground_truth_nodes: list[dict[str, Any]],
+    citations: list[dict[str, Any]],
+) -> dict[str, Any]:
     """
-    Score a single benchmark result against its ground_truth_nodes.
+    Shared scoring core used by BOTH compute_query_metrics (main
+    benchmark, keyed by mode) and compute_ablation_query_metrics
+    (hop-depth ablation, keyed by hop_depth). Extracted so there is only
+    ONE place this math can be wrong -- duplicating it would have meant
+    the grounding_accuracy bug fixed earlier could silently reappear in
+    a second, unsynced copy for ablation scoring.
 
-    Precision@K / Recall@K are computed over ALL chunks actually
-    retrieved (K = len(chunks_used)) rather than an arbitrary fixed
-    cutoff, because that set is exactly what was sent to the LLM as
-    context -- it's the retrieval quality that actually mattered for the
-    answer that was generated, not a hypothetical top-5.
-
-    MRR uses the rank (1-indexed, by score order in chunks_used) of the
-    first ground-truth node found; 0.0 if none were retrieved at all.
-
-    Grounding accuracy is answer-level, not retrieval-level: of the
-    ground-truth nodes, what fraction were actually CITED in the final
-    answer (citation line range overlaps the node's line range)? This is
-    stricter than recall -- a chunk can be retrieved but never used in
-    the answer, and this metric would correctly not credit that.
+    See compute_query_metrics's docstring for the precision@k / recall@k
+    / MRR / grounding_accuracy definitions -- unchanged here, just
+    factored out.
     """
-    ground_truth = record.get("ground_truth_nodes", [])
-    ground_truth_ids = _node_ids(ground_truth)
+    ground_truth_ids = _node_ids(ground_truth_nodes)
     ground_truth_count = len(ground_truth_ids)
 
-    if not record.get("success"):
-        return QueryMetrics(
-            query_id=record["query_id"],
-            mode=record["mode"],
-            category=record.get("category", "unknown"),
-            expected_hybrid_advantage=record.get("expected_hybrid_advantage", False),
-            success=False,
-            k_retrieved=0,
-            ground_truth_count=ground_truth_count,
-            precision_at_k=None,
-            recall_at_k=None,
-            reciprocal_rank=None,
-            grounding_accuracy=None,
-            citation_correctness_rate=None,
-            latency_seconds=record.get("latency_seconds"),
-            matched_ground_truth_ids=[],
-            unmatched_ground_truth_ids=sorted(ground_truth_ids),
-        )
-
-    chunks_used = record.get("chunks_used", [])
     retrieved_ids = [c["node_id"] for c in chunks_used if "node_id" in c]
     retrieved_id_set = set(retrieved_ids)
     k_retrieved = len(retrieved_ids)
@@ -194,22 +172,11 @@ def compute_query_metrics(record: dict[str, Any]) -> QueryMetrics:
             reciprocal_rank = 1.0 / rank
             break
 
-    # Grounding accuracy: does the answer's citations actually cover the
-    # ground-truth nodes, by file + overlapping line range? Only citations
-    # the API already validated (is_valid=True) count -- an invalid
-    # citation (e.g. a malformed or oversized line range that doesn't
-    # correspond to any real retrieved chunk) must not be allowed to
-    # spuriously "cover" a ground-truth node just because its range is
-    # wide. Confirmed empirically: q14/semantic had a citation
-    # "(exceptions.py:35-359)" flagged is_valid=False for
-    # line_range_mismatch, and without this filter its huge range
-    # accidentally overlapped a real ground-truth node, inflating that
-    # query's grounding score from 0.0 to 0.5.
-    citations = [c for c in record.get("citations", []) if c.get("is_valid")]
+    valid_citations = [c for c in citations if c.get("is_valid")]
     grounding_accuracy = None
     if ground_truth_count > 0:
         grounded_count = 0
-        for gt_node in ground_truth:
+        for gt_node in ground_truth_nodes:
             gt_file = gt_node.get("filepath")
             gt_start = gt_node.get("start_line")
             gt_end = gt_node.get("end_line")
@@ -220,11 +187,53 @@ def compute_query_metrics(record: dict[str, Any]) -> QueryMetrics:
                     gt_file, gt_start, gt_end,
                     c.get("filepath", ""), c.get("start_line", -1), c.get("end_line", -1),
                 )
-                for c in citations
+                for c in valid_citations
             )
             if is_grounded:
                 grounded_count += 1
         grounding_accuracy = grounded_count / ground_truth_count
+
+    return {
+        "k_retrieved": k_retrieved,
+        "ground_truth_count": ground_truth_count,
+        "precision_at_k": round(precision_at_k, 4),
+        "recall_at_k": round(recall_at_k, 4) if recall_at_k is not None else None,
+        "reciprocal_rank": round(reciprocal_rank, 4),
+        "grounding_accuracy": round(grounding_accuracy, 4) if grounding_accuracy is not None else None,
+        "matched_ground_truth_ids": sorted(matched),
+        "unmatched_ground_truth_ids": sorted(unmatched),
+    }
+
+
+def compute_query_metrics(record: dict[str, Any]) -> QueryMetrics:
+    """
+    Score a single MAIN BENCHMARK result (keyed by mode) against its
+    ground_truth_nodes. See _score_retrieval for the actual math.
+    """
+    ground_truth = record.get("ground_truth_nodes", [])
+
+    if not record.get("success"):
+        return QueryMetrics(
+            query_id=record["query_id"],
+            mode=record["mode"],
+            category=record.get("category", "unknown"),
+            expected_hybrid_advantage=record.get("expected_hybrid_advantage", False),
+            success=False,
+            k_retrieved=0,
+            ground_truth_count=len(_node_ids(ground_truth)),
+            precision_at_k=None,
+            recall_at_k=None,
+            reciprocal_rank=None,
+            grounding_accuracy=None,
+            citation_correctness_rate=None,
+            latency_seconds=record.get("latency_seconds"),
+            matched_ground_truth_ids=[],
+            unmatched_ground_truth_ids=sorted(_node_ids(ground_truth)),
+        )
+
+    scored = _score_retrieval(
+        record.get("chunks_used", []), ground_truth, record.get("citations", [])
+    )
 
     return QueryMetrics(
         query_id=record["query_id"],
@@ -232,17 +241,152 @@ def compute_query_metrics(record: dict[str, Any]) -> QueryMetrics:
         category=record.get("category", "unknown"),
         expected_hybrid_advantage=record.get("expected_hybrid_advantage", False),
         success=True,
-        k_retrieved=k_retrieved,
-        ground_truth_count=ground_truth_count,
-        precision_at_k=round(precision_at_k, 4),
-        recall_at_k=round(recall_at_k, 4) if recall_at_k is not None else None,
-        reciprocal_rank=round(reciprocal_rank, 4),
-        grounding_accuracy=round(grounding_accuracy, 4) if grounding_accuracy is not None else None,
         citation_correctness_rate=record.get("citation_correctness_rate"),
         latency_seconds=record.get("latency_seconds"),
-        matched_ground_truth_ids=sorted(matched),
-        unmatched_ground_truth_ids=sorted(unmatched),
+        **scored,
     )
+
+
+@dataclass
+class AblationQueryMetrics:
+    """Metrics computed for one (query_id, hop_depth) ablation result.
+    Mirrors QueryMetrics but keyed by hop_depth instead of mode, since
+    every ablation call is hybrid mode by construction."""
+
+    query_id: str
+    hop_depth: int
+    category: str
+    success: bool
+    k_retrieved: int
+    ground_truth_count: int
+    precision_at_k: float | None
+    recall_at_k: float | None
+    reciprocal_rank: float | None
+    grounding_accuracy: float | None
+    citation_correctness_rate: float | None
+    latency_seconds: float | None
+    reused_from_main_benchmark: bool
+    reuse_confidence: str
+    matched_ground_truth_ids: list[str]
+    unmatched_ground_truth_ids: list[str]
+
+
+def compute_ablation_query_metrics(record: dict[str, Any]) -> AblationQueryMetrics:
+    """Score a single ABLATION result (keyed by hop_depth). Uses the
+    exact same _score_retrieval core as the main benchmark path -- a
+    reused hop=2 record is scored identically to a fresh one, since its
+    chunks_used/citations were copied verbatim from the original
+    successful call."""
+    ground_truth = record.get("ground_truth_nodes", [])
+
+    if not record.get("success"):
+        return AblationQueryMetrics(
+            query_id=record["query_id"],
+            hop_depth=record["hop_depth"],
+            category=record.get("category", "unknown"),
+            success=False,
+            k_retrieved=0,
+            ground_truth_count=len(_node_ids(ground_truth)),
+            precision_at_k=None,
+            recall_at_k=None,
+            reciprocal_rank=None,
+            grounding_accuracy=None,
+            citation_correctness_rate=None,
+            latency_seconds=record.get("latency_seconds"),
+            reused_from_main_benchmark=record.get("reused_from_main_benchmark", False),
+            reuse_confidence=record.get("reuse_confidence", ""),
+            matched_ground_truth_ids=[],
+            unmatched_ground_truth_ids=sorted(_node_ids(ground_truth)),
+        )
+
+    scored = _score_retrieval(
+        record.get("chunks_used", []), ground_truth, record.get("citations", [])
+    )
+
+    return AblationQueryMetrics(
+        query_id=record["query_id"],
+        hop_depth=record["hop_depth"],
+        category=record.get("category", "unknown"),
+        success=True,
+        citation_correctness_rate=record.get("citation_correctness_rate"),
+        latency_seconds=record.get("latency_seconds"),
+        reused_from_main_benchmark=record.get("reused_from_main_benchmark", False),
+        reuse_confidence=record.get("reuse_confidence", ""),
+        **scored,
+    )
+
+
+def load_ablation_results(path: Path) -> list[dict[str, Any]]:
+    """Load and deduplicate ablation_results.jsonl the same way
+    load_results + deduplicate_latest_per_pair handle the main benchmark
+    -- keyed on (query_id, hop_depth) instead of (query_id, mode),
+    preferring a success over a failure, latest wins on ties."""
+    if not path.exists():
+        return []
+
+    records: list[dict[str, Any]] = []
+    with path.open(encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                records.append(json.loads(line))
+
+    best: dict[tuple[str, int], dict[str, Any]] = {}
+    for record in records:
+        key = (record["query_id"], record["hop_depth"])
+        existing = best.get(key)
+        if existing is None:
+            best[key] = record
+        elif record["success"] and not existing["success"]:
+            best[key] = record
+        elif record["success"] == existing["success"]:
+            best[key] = record
+    return list(best.values())
+
+
+def aggregate_ablation_by_hop_depth(
+    ablation_metrics: list[AblationQueryMetrics],
+) -> dict[int, dict[str, Any]]:
+    """Mean metrics per hop_depth across all ablated queries -- shows
+    whether precision/recall/grounding shift as hop_depth increases."""
+    by_depth: dict[int, list[AblationQueryMetrics]] = defaultdict(list)
+    for am in ablation_metrics:
+        by_depth[am.hop_depth].append(am)
+
+    summary: dict[int, dict[str, Any]] = {}
+    for depth, items in sorted(by_depth.items()):
+        successful = [a for a in items if a.success]
+        summary[depth] = {
+            "total_queries": len(items),
+            "successful_queries": len(successful),
+            "mean_precision_at_k": _mean([a.precision_at_k for a in successful]),
+            "mean_recall_at_k": _mean([a.recall_at_k for a in successful]),
+            "mrr": _mean([a.reciprocal_rank for a in successful]),
+            "mean_grounding_accuracy": _mean([a.grounding_accuracy for a in successful]),
+            "mean_latency_seconds": _mean([a.latency_seconds for a in successful]),
+        }
+    return summary
+
+
+def aggregate_ablation_by_query(
+    ablation_metrics: list[AblationQueryMetrics],
+) -> dict[str, dict[int, dict[str, Any]]]:
+    """Per-query view across all 4 hop depths side by side -- this IS
+    the hop-depth ablation table: for query q05, what did hop=0/1/2/3
+    each retrieve and score?"""
+    by_query: dict[str, dict[int, dict[str, Any]]] = defaultdict(dict)
+    for am in ablation_metrics:
+        by_query[am.query_id][am.hop_depth] = {
+            "success": am.success,
+            "precision_at_k": am.precision_at_k,
+            "recall_at_k": am.recall_at_k,
+            "mrr": am.reciprocal_rank,
+            "grounding_accuracy": am.grounding_accuracy,
+            "matched_ground_truth_ids": am.matched_ground_truth_ids,
+            "reused_from_main_benchmark": am.reused_from_main_benchmark,
+            "reuse_confidence": am.reuse_confidence,
+        }
+    return dict(by_query)
 
 
 def _mean(values: list[float]) -> float | None:
@@ -381,8 +525,12 @@ def parse_args() -> argparse.Namespace:
         help=f"Path to write the metrics summary JSON (default: {DEFAULT_SUMMARY_PATH})",
     )
     parser.add_argument(
+        "--ablation-results", type=Path, default=DEFAULT_ABLATION_RESULTS_PATH,
+        help=f"Path to ablation_results.jsonl (default: {DEFAULT_ABLATION_RESULTS_PATH}). If missing, ablation scoring is skipped, not an error.",
+    )
+    parser.add_argument(
         "--expected-total-pairs", type=int, default=54,
-        help="Expected number of (query_id, mode) pairs for a full run, used only to label output as partial/full (default: 54)",
+        help="Expected number of (query_id, mode) pairs for a full main-benchmark run, used only to label output as partial/full (default: 54)",
     )
     return parser.parse_args()
 
@@ -410,6 +558,47 @@ def main() -> None:
         expected_total_pairs=args.expected_total_pairs,
     )
 
+    # --- Ablation scoring (optional -- skipped cleanly if the file
+    # doesn't exist yet, so this script works before AND after the
+    # ablation run without any code change). ---
+    ablation_output: dict[str, Any] = {}
+    ablation_records = load_ablation_results(args.ablation_results)
+    if ablation_records:
+        ablation_metrics = [compute_ablation_query_metrics(r) for r in ablation_records]
+        ablation_by_depth = aggregate_ablation_by_hop_depth(ablation_metrics)
+        ablation_by_query = aggregate_ablation_by_query(ablation_metrics)
+
+        print()
+        print("=" * 72)
+        print(f"  ABLATION: {len(ablation_metrics)} (query_id, hop_depth) pairs scored")
+        print("=" * 72)
+        for depth, stats in sorted(ablation_by_depth.items()):
+            print(
+                f"  hop={depth}  n={stats['successful_queries']:<3} "
+                f"precision@k={stats['mean_precision_at_k']}  "
+                f"recall@k={stats['mean_recall_at_k']}  "
+                f"MRR={stats['mrr']}  "
+                f"grounding={stats['mean_grounding_accuracy']}"
+            )
+        print("=" * 72)
+
+        ablation_output = {
+            "sample_size": {
+                "pairs_scored": len(ablation_metrics),
+                "expected_pairs": 24,  # 6 queries x 4 hop depths, per the ablation design
+                "is_partial": len(ablation_metrics) < 24,
+            },
+            "by_hop_depth": ablation_by_depth,
+            "by_query": ablation_by_query,
+        }
+        logger.info("Scored %d ablation pairs", len(ablation_metrics))
+    else:
+        logger.info(
+            "No ablation results found at %s -- skipping ablation scoring "
+            "(this is expected if the ablation run hasn't happened yet).",
+            args.ablation_results,
+        )
+
     output_data = {
         "sample_size": {
             "unique_pairs_with_attempt": len(deduped),
@@ -420,6 +609,7 @@ def main() -> None:
         "by_mode": by_mode,
         "by_category_and_mode": by_category,
         "per_query": [asdict(qm) for qm in query_metrics],
+        "ablation": ablation_output,
     }
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
