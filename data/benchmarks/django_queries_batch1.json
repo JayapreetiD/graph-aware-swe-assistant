@@ -1,0 +1,149 @@
+
+
+{
+  "meta": {
+    "repo": "django",
+    "pinned_commit": "cccc004b46f71b4e54d87b376be691a17de6b903",
+    "scope": "Scoped to django/forms/ and django/db/ only, per project scope document (django/forms + django/db/models). Parsed from a local staging copy (~/repos/target-medium-scoped/django) containing exact copies of these two subfolders from the pinned commit, not the full Django checkout.",
+    "graph_stats_at_construction": {
+      "nodes": 4489,
+      "edges": 6656,
+      "edge_types": {"calls": 1845, "defines": 4357, "imports": 57, "inherits": 421},
+      "cross_file_calls": 25,
+      "cross_file_inherits": 0,
+      "cross_file_2hop_calls_chains": 1
+    },
+    "notes": "Django's cross-file structure differs fundamentally from click's, and the benchmark category design reflects this honestly rather than forcing click's categories onto different data. Click had zero inheritance edges anywhere but rich multi-hop cross-file call chains (up to 3 hops). Django has the OPPOSITE shape in this scoped subset: only 25 cross-file call edges (vs click's 113), essentially no real multi-hop cross-file call chains (exactly 1 found, and even that one's third hop lands back in the same file as the second), but a rich, deep same-file class inheritance structure (421 inherits edges, e.g. NullBooleanField -> BooleanField -> Field, three levels, all within forms/fields.py). Category definitions below are adapted accordingly: 'cross_file_1hop' uses real cross-file calls (Django's only meaningfully-populated cross-file category); 'same_file_inherit_shallow' and 'same_file_inherit_deep' are NEW categories that did not exist in click's benchmark at all, since click had zero inheritance to test. 'cross_file_2hop'/'cross_file_3hop' categories are intentionally NOT populated for Django -- the underlying structure to support them does not exist in this scoped subset, and forcing weak examples would misrepresent the codebase rather than honestly report it.",
+    "category_definitions": {
+      "local_0hop": "Answer is fully contained in one function/file; graph expansion should add nothing.",
+      "cross_file_1hop": "Answer requires one additional file reached via a single calls edge from the top semantic hit.",
+      "same_file_inherit_shallow": "Answer requires understanding a 1-2 level inheritance relationship, all within one file. Tests whether retrieval finds the correct PARENT class, not just the class the question names.",
+      "same_file_inherit_deep": "Answer requires understanding a 3+ level inheritance chain, all within one file. Tests whether graph expansion can trace multiple inheritance hops correctly."
+    }
+  },
+  "queries": [
+    {
+      "query_id": "dj01",
+      "question": "How does Django's BaseForm decide which renderer to use when none is explicitly provided?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "forms/forms.py::BaseForm.__init__", "filepath": "forms/forms.py", "start_line": 73, "end_line": 134},
+        {"node_id": "forms/renderers.py::get_default_renderer", "filepath": "forms/renderers.py", "start_line": 12, "end_line": 14}
+      ],
+      "notes": "Cross-file: BaseForm's constructor delegates the default-renderer decision to a small helper function in a different file."
+    },
+    {
+      "query_id": "dj02",
+      "question": "What does a Widget use to pick a renderer when rendering itself, if one wasn't already set?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "forms/widgets.py::Widget._render", "filepath": "forms/widgets.py", "start_line": 378, "end_line": 381},
+        {"node_id": "forms/renderers.py::get_default_renderer", "filepath": "forms/renderers.py", "start_line": 12, "end_line": 14}
+      ],
+      "notes": "Same target function as dj01 (get_default_renderer) reached from a different origin file/class -- tests whether retrieval finds a shared cross-file dependency consistently across different callers, not just once."
+    },
+    {
+      "query_id": "dj03",
+      "question": "When a ManyToManyField is added to a model, what descriptor class does it use to manage the relationship?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "db/models/fields/related.py::ManyToManyField.contribute_to_class", "filepath": "db/models/fields/related.py", "start_line": 2104, "end_line": 2151},
+        {"node_id": "db/models/fields/related_descriptors.py::ManyToManyDescriptor", "filepath": "db/models/fields/related_descriptors.py", "start_line": 1026, "end_line": 1070}
+      ],
+      "notes": "Cross-file, and the target is a CLASS (ManyToManyDescriptor), not a function -- tests chunk-type diversity, similar to click's wrap_text/TextWrapper case."
+    },
+    {
+      "query_id": "dj04",
+      "question": "What two things does MigrationExecutor set up when it's first created?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "db/migrations/executor.py::MigrationExecutor.__init__", "filepath": "db/migrations/executor.py", "start_line": 16, "end_line": 20},
+        {"node_id": "db/migrations/loader.py::MigrationLoader", "filepath": "db/migrations/loader.py", "start_line": 21, "end_line": 433},
+        {"node_id": "db/migrations/recorder.py::MigrationRecorder", "filepath": "db/migrations/recorder.py", "start_line": 9, "end_line": 111}
+      ],
+      "notes": "Multi-target: one small __init__ method reaches into two different files for its two collaborator classes. MigrationLoader is a large class (21-433) -- worth watching whether retrieval/chunking handles it without truncation issues, given click had oversized-chunk problems with large classes."
+    },
+    {
+      "query_id": "dj05",
+      "question": "What exception does Django raise if a migration plan turns out to be invalid partway through migrating?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "db/migrations/executor.py::MigrationExecutor.migrate", "filepath": "db/migrations/executor.py", "start_line": 96, "end_line": 147},
+        {"node_id": "db/migrations/exceptions.py::InvalidMigrationPlan", "filepath": "db/migrations/exceptions.py", "start_line": 59, "end_line": 60}
+      ],
+      "notes": "Same pattern as click's exception-lookup queries (e.g. q07, q14) -- the exception class lives in a dedicated exceptions.py file, separate from the code that raises it."
+    },
+    {
+      "query_id": "dj06",
+      "question": "What error does Django raise if a project's migration history is found to be inconsistent during a consistency check?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "db/migrations/loader.py::MigrationLoader.check_consistent_history", "filepath": "db/migrations/loader.py", "start_line": 344, "end_line": 370},
+        {"node_id": "db/migrations/exceptions.py::InconsistentMigrationHistory", "filepath": "db/migrations/exceptions.py", "start_line": 22, "end_line": 25}
+      ],
+      "notes": "Second exceptions.py-lookup query in the migrations cluster, different exception and different origin method from dj05 -- avoids over-relying on a single example, same discipline used for click's echo-hub cap."
+    },
+    {
+      "query_id": "dj07",
+      "question": "What does Django's PostgreSQL backend use to figure out connection parameters when opening a new database connection?",
+      "category": "cross_file_1hop",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params", "filepath": "db/backends/postgresql/base.py", "start_line": 250, "end_line": 315},
+        {"node_id": "db/backends/postgresql/psycopg_any.py::get_adapters_template", "filepath": "db/backends/postgresql/psycopg_any.py", "start_line": 61, "end_line": 76}
+      ],
+      "notes": "Only cross-file query originating in db/backends/ -- diversifies origin files away from the forms/migrations cluster, same lesson learned from click's batch2 (avoid over-concentrating on one origin file)."
+    },
+    {
+      "query_id": "dj08",
+      "question": "What class does Django's URLField inherit from, and what does that tell you about how it validates input?",
+      "category": "same_file_inherit_shallow",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "forms/fields.py::URLField", "filepath": "forms/fields.py", "start_line": 772, "end_line": 802},
+        {"node_id": "forms/fields.py::CharField", "filepath": "forms/fields.py", "start_line": 276, "end_line": 309}
+      ],
+      "notes": "Shallow (1-level) same-file inheritance. Tests whether retrieval finds the PARENT class (CharField) when the question names the CHILD (URLField) -- a category that does not exist at all in click's benchmark, since click has zero inheritance edges."
+    },
+    {
+      "query_id": "dj09",
+      "question": "NullBooleanField inherits from BooleanField, which itself inherits from a common base class. What is that base class?",
+      "category": "same_file_inherit_deep",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "forms/fields.py::NullBooleanField", "filepath": "forms/fields.py", "start_line": 832, "end_line": 857},
+        {"node_id": "forms/fields.py::BooleanField", "filepath": "forms/fields.py", "start_line": 805, "end_line": 829},
+        {"node_id": "forms/fields.py::Field", "filepath": "forms/fields.py", "start_line": 84, "end_line": 273}
+      ],
+      "notes": "Deep (2-level, 3-node) same-file inheritance chain, explicitly naming the intermediate class in the question. Tests whether retrieval/graph-expansion can trace multiple inheritance hops to reach the root base class, not just the immediate parent."
+    },
+    {
+      "query_id": "dj10",
+      "question": "DateField shares a common intermediate parent with TimeField and DateTimeField. What is that shared parent class?",
+      "category": "same_file_inherit_deep",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "forms/fields.py::DateField", "filepath": "forms/fields.py", "start_line": 482, "end_line": 503},
+        {"node_id": "forms/fields.py::BaseTemporalField", "filepath": "forms/fields.py", "start_line": 462, "end_line": 479}
+      ],
+      "notes": "Tests whether retrieval can find a shared intermediate parent when the question describes sibling relationships rather than naming the parent directly -- a harder phrasing than dj09."
+    },
+    {
+      "query_id": "dj11",
+      "question": "What is the immediate parent class of TypedChoiceField, and what does that relationship suggest about how it handles a fixed set of choices?",
+      "category": "same_file_inherit_shallow",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "forms/fields.py::TypedChoiceField", "filepath": "forms/fields.py", "start_line": 918, "end_line": 943},
+        {"node_id": "forms/fields.py::ChoiceField", "filepath": "forms/fields.py", "start_line": 860, "end_line": 915}
+      ],
+      "notes": "Second shallow-inheritance query, deliberately included so this category has more than one example (matching click's discipline of never drawing a category conclusion from a single query)."
+    }
+  ]
+}
