@@ -1,3 +1,5 @@
+
+
 """
 evaluation/benchmark.py
 
@@ -56,8 +58,19 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# ACTIVE_REPO-driven paths, matching the pattern config/settings.py already
+# uses elsewhere in this project. This makes benchmark.py work correctly for
+# BOTH click and django (or any future repo) without any code change --
+# switching repos is purely an environment-variable concern, same as the
+# rest of the pipeline. Confirmed necessary: this file previously hardcoded
+# "click" in five places (query file pattern, results dir, ablation paths),
+# which would have silently caused a django run to load click's queries or
+# write into click's results files instead of failing loudly -- a much
+# worse outcome than a crash.
+from config.settings import ACTIVE_REPO
+
 DEFAULT_BENCHMARKS_DIR = Path("data/benchmarks")
-DEFAULT_OUTPUT_DIR = Path("data/results/click")
+DEFAULT_OUTPUT_DIR = Path(f"data/results/{ACTIVE_REPO}")
 DEFAULT_BASE_URL = "http://127.0.0.1:8000"
 DEFAULT_MODES = ("semantic", "hybrid")
 
@@ -166,17 +179,17 @@ class BenchmarkResult:
 
 def load_queries(benchmarks_dir: Path) -> list[BenchmarkQuery]:
     """
-    Load every query from every click_queries_batch*.json file found in
+    Load every query from every {ACTIVE_REPO}_queries_batch*.json file found in
     benchmarks_dir. Deliberately glob-based rather than a hard-coded file
     list, so adding a batch4 file later requires no code change here.
     """
-    pattern = str(benchmarks_dir / "click_queries_batch*.json")
+    pattern = str(benchmarks_dir / f"{ACTIVE_REPO}_queries_batch*.json")
     batch_files = sorted(glob.glob(pattern))
 
     if not batch_files:
         raise FileNotFoundError(
             f"No files matching {pattern} found. Expected "
-            f"click_queries_batch1.json etc. under {benchmarks_dir}."
+            f"{ACTIVE_REPO}_queries_batch1.json etc. under {benchmarks_dir}."
         )
 
     queries: list[BenchmarkQuery] = []
@@ -468,8 +481,8 @@ def run_benchmark(
     logger.info("Benchmark run complete. Results appended to %s", output_path)
 
 
-ABLATION_QUERIES_PATH = Path("data/benchmarks/click_ablation_queries.json")
-ABLATION_OUTPUT_PATH = Path("data/results/click/ablation_results.jsonl")
+ABLATION_QUERIES_PATH = Path(f"data/benchmarks/{ACTIVE_REPO}_ablation_queries.json")
+ABLATION_OUTPUT_PATH = Path(f"data/results/{ACTIVE_REPO}/ablation_results.jsonl")
 ABLATION_HOP_DEPTHS = (0, 1, 2, 3)
 
 # hop_depth=2 is the retriever's own hard-coded default (see
@@ -750,7 +763,7 @@ def parse_args() -> argparse.Namespace:
         "--benchmarks-dir",
         type=Path,
         default=DEFAULT_BENCHMARKS_DIR,
-        help=f"Directory containing click_queries_batch*.json (default: {DEFAULT_BENCHMARKS_DIR})",
+        help=f"Directory containing {ACTIVE_REPO}_queries_batch*.json (default: {DEFAULT_BENCHMARKS_DIR})",
     )
     parser.add_argument(
         "--output",
