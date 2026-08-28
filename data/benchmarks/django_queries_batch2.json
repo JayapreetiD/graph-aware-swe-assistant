@@ -1,0 +1,81 @@
+
+
+{
+  "meta": {
+    "repo": "django",
+    "pinned_commit": "cccc004b46f71b4e54d87b376be691a17de6b903",
+    "batch": 2,
+    "notes": "This batch draws from db/models/fields/__init__.py's inheritance structure (the MODEL layer), distinct from batch1's forms/fields.py examples (the FORM layer). Django defines several classes with IDENTICAL names in both files (BooleanField, NullBooleanField, CharField, TextField, URLField all exist separately in forms/fields.py AND db/models/fields/__init__.py, with completely different code) -- a name-collision scenario click never had, since click has no repeated class/function names across files in its scoped structure. dj16 is deliberately designed to test whether retrieval correctly distinguishes the two same-named classes rather than confusing them. This batch also includes Django's first documented multiple-inheritance cases (a class inheriting from two distinct parents simultaneously), another structural feature absent from click entirely."
+  },
+  "queries": [
+    {
+      "query_id": "dj12",
+      "question": "What is the parent class of the database model's BooleanField, and roughly how large is that base Field class?",
+      "category": "same_file_inherit_shallow",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "db/models/fields/__init__.py::BooleanField", "filepath": "db/models/fields/__init__.py", "start_line": 1201, "end_line": 1244},
+        {"node_id": "db/models/fields/__init__.py::Field", "filepath": "db/models/fields/__init__.py", "start_line": 129, "end_line": 1198}
+      ],
+      "notes": "Model-layer counterpart to a forms-layer inheritance question. Field here is a very large class (129-1198, ~1070 lines) -- worth watching for oversized-chunk skipping, similar to click's formatting.py::wrap_text and other large-chunk cases."
+    },
+    {
+      "query_id": "dj13",
+      "question": "DateTimeField inherits from DateField at the model level. What does DateField itself inherit from, besides the base Field class?",
+      "category": "same_file_inherit_deep",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "db/models/fields/__init__.py::DateTimeField", "filepath": "db/models/fields/__init__.py", "start_line": 1600, "end_line": 1738},
+        {"node_id": "db/models/fields/__init__.py::DateField", "filepath": "db/models/fields/__init__.py", "start_line": 1465, "end_line": 1597},
+        {"node_id": "db/models/fields/__init__.py::DateTimeCheckMixin", "filepath": "db/models/fields/__init__.py", "start_line": 1392, "end_line": 1462}
+      ],
+      "notes": "Tests MULTIPLE inheritance specifically: DateField inherits from both DateTimeCheckMixin AND Field simultaneously -- a structural feature that does not exist anywhere in click's codebase. The question deliberately asks for the 'besides Field' parent to force retrieval to find the second, less obvious base class."
+    },
+    {
+      "query_id": "dj14",
+      "question": "SmallAutoField gets its auto-increment behavior from a mixin class shared with other auto-field types. What is that mixin called?",
+      "category": "same_file_inherit_shallow",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "db/models/fields/__init__.py::SmallAutoField", "filepath": "db/models/fields/__init__.py", "start_line": 2980, "end_line": 2985},
+        {"node_id": "db/models/fields/__init__.py::AutoFieldMixin", "filepath": "db/models/fields/__init__.py", "start_line": 2875, "end_line": 2929}
+      ],
+      "notes": "Second multiple-inheritance case (SmallAutoField inherits AutoFieldMixin AND SmallIntegerField); this query targets only the mixin side of that relationship."
+    },
+    {
+      "query_id": "dj15",
+      "question": "PositiveSmallIntegerField gets its non-negative validation from a shared mixin. What is that mixin, and what other IntegerField subclass does PositiveSmallIntegerField also inherit from?",
+      "category": "same_file_inherit_deep",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "db/models/fields/__init__.py::PositiveSmallIntegerField", "filepath": "db/models/fields/__init__.py", "start_line": 2473, "end_line": 2485},
+        {"node_id": "db/models/fields/__init__.py::PositiveIntegerRelDbTypeMixin", "filepath": "db/models/fields/__init__.py", "start_line": 2415, "end_line": 2440},
+        {"node_id": "db/models/fields/__init__.py::SmallIntegerField", "filepath": "db/models/fields/__init__.py", "start_line": 2259, "end_line": 2263},
+        {"node_id": "db/models/fields/__init__.py::IntegerField", "filepath": "db/models/fields/__init__.py", "start_line": 2142, "end_line": 2239}
+      ],
+      "notes": "The deepest, most demanding query in the Django set: requires finding a multiple-inheritance parent (mixin) AND tracing a second inheritance level (SmallIntegerField -> IntegerField) simultaneously. Four ground-truth nodes, more than any single click query."
+    },
+    {
+      "query_id": "dj16",
+      "question": "In Django's database model fields (not the form fields), what does CommaSeparatedIntegerField inherit from?",
+      "category": "same_file_inherit_shallow",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "db/models/fields/__init__.py::CommaSeparatedIntegerField", "filepath": "db/models/fields/__init__.py", "start_line": 1366, "end_line": 1379},
+        {"node_id": "db/models/fields/__init__.py::CharField", "filepath": "db/models/fields/__init__.py", "start_line": 1247, "end_line": 1363}
+      ],
+      "notes": "DISAMBIGUATION TEST: the question explicitly says 'database model fields (not the form fields)' because CharField, NullBooleanField, and several others exist as separate, differently-coded classes in BOTH forms/fields.py and db/models/fields/__init__.py. Ground truth here is exclusively the db/models/fields/__init__.py version. If retrieval returns forms/fields.py::CharField instead of (or in addition to, presented as if equivalent) the correct db/models/fields/__init__.py::CharField, that is a real, meaningful retrieval error worth reporting -- this scenario has no equivalent anywhere in click's benchmark."
+    },
+    {
+      "query_id": "dj17",
+      "question": "What does SlugField inherit from at the model/database level?",
+      "category": "same_file_inherit_shallow",
+      "expected_hybrid_advantage": true,
+      "ground_truth_nodes": [
+        {"node_id": "db/models/fields/__init__.py::SlugField", "filepath": "db/models/fields/__init__.py", "start_line": 2488, "end_line": 2522},
+        {"node_id": "db/models/fields/__init__.py::CharField", "filepath": "db/models/fields/__init__.py", "start_line": 1247, "end_line": 1363}
+      ],
+      "notes": "Second shallow model-layer inheritance query, deliberately using different specific classes than dj16 so the disambiguation-relevant category isn't tested by only one example."
+    }
+  ]
+}
