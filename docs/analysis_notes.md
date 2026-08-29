@@ -33,3 +33,21 @@ for BOTH modes — hybrid's graph expansion did not rescue this query at all.
 
 Look for 2-3 more citation-abstention cases. If the pattern repeats, consider
 a dedicated flag/metric. Do not generalize from this single q14 example alone.
+
+## UPDATE: Citation-abstention confirmed to generalize (Django benchmark)
+
+The action item above has been resolved with real evidence. A direct check
+of Django's 34-call benchmark found **13/34 calls (38%) produced zero
+citations**, each trivially scoring a "perfect" 1.0 citation correctness.
+Five queries (dj04, dj06, dj09, dj10, dj15) were zero-citation in BOTH
+modes simultaneously. This is no longer a single-example curiosity — it is
+a systemic pattern, more severe in Django's benchmark than click's (1/54).
+
+**Recommendation for any future iteration**: citation correctness should
+never be reported as a standalone metric again. At minimum, always report
+it alongside citation count/coverage (e.g. "X% of calls produced zero
+citations"). A more robust fix would be a dedicated
+`grounding_attempt_rate` metric (fraction of successful calls with >=1
+citation) computed separately in `metrics.py`, so a future evaluator can
+see abstention rate directly without having to re-derive it from raw
+results the way this check did.
