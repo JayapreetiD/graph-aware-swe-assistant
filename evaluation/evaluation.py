@@ -49,6 +49,9 @@ import logging
 from pathlib import Path
 from typing import Any
 
+# ACTIVE_REPO-driven paths, matching benchmark.py and metrics.py's fix.
+from config.settings import ACTIVE_REPO
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
@@ -56,11 +59,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DEFAULT_METRICS_SUMMARY_PATH = Path("data/results/click/metrics_summary.json")
-DEFAULT_BENCHMARK_RESULTS_PATH = Path("data/results/click/benchmark_results.jsonl")
-DEFAULT_ABLATION_RESULTS_PATH = Path("data/results/click/ablation_results.jsonl")
+DEFAULT_METRICS_SUMMARY_PATH = Path(f"data/results/{ACTIVE_REPO}/metrics_summary.json")
+DEFAULT_BENCHMARK_RESULTS_PATH = Path(f"data/results/{ACTIVE_REPO}/benchmark_results.jsonl")
+DEFAULT_ABLATION_RESULTS_PATH = Path(f"data/results/{ACTIVE_REPO}/ablation_results.jsonl")
 DEFAULT_BENCHMARKS_DIR = Path("data/benchmarks")
-DEFAULT_OUTPUT_PATH = Path("data/results/click/evaluation_report.json")
+DEFAULT_OUTPUT_PATH = Path(f"data/results/{ACTIVE_REPO}/evaluation_report.json")
 
 # The win/loss/tie rule is stated here, once, in plain sight -- not
 # buried in a comparison function -- because it is the single most
@@ -159,7 +162,7 @@ def load_query_notes(benchmarks_dir: Path) -> dict[str, str]:
     who designed the ground truth) already wrote, so later human
     interpretation has it without re-deriving it."""
     notes: dict[str, str] = {}
-    pattern = str(benchmarks_dir / "click_queries_batch*.json")
+    pattern = str(benchmarks_dir / f"{ACTIVE_REPO}_queries_batch*.json")
     for path_str in sorted(glob.glob(pattern)):
         with open(path_str, encoding="utf-8") as f:
             data = json.load(f)

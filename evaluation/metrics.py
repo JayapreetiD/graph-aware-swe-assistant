@@ -31,6 +31,13 @@ from dataclasses import dataclass, asdict
 from pathlib import Path
 from typing import Any
 
+# ACTIVE_REPO-driven paths, matching benchmark.py's fix. Confirmed
+# necessary: without this, metrics.py silently read/wrote click's files
+# even when ACTIVE_REPO=django was correctly set in the shell -- the
+# hardcoded "click" path won regardless of the environment variable,
+# and no error was raised, just wrong data scored silently.
+from config.settings import ACTIVE_REPO
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
@@ -38,9 +45,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DEFAULT_RESULTS_PATH = Path("data/results/click/benchmark_results.jsonl")
-DEFAULT_ABLATION_RESULTS_PATH = Path("data/results/click/ablation_results.jsonl")
-DEFAULT_SUMMARY_PATH = Path("data/results/click/metrics_summary.json")
+DEFAULT_RESULTS_PATH = Path(f"data/results/{ACTIVE_REPO}/benchmark_results.jsonl")
+DEFAULT_ABLATION_RESULTS_PATH = Path(f"data/results/{ACTIVE_REPO}/ablation_results.jsonl")
+DEFAULT_SUMMARY_PATH = Path(f"data/results/{ACTIVE_REPO}/metrics_summary.json")
 
 
 @dataclass
