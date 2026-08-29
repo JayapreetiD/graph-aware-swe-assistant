@@ -15,6 +15,7 @@
       "mrr": 0.5686,
       "mean_grounding_accuracy": 0.3431,
       "mean_citation_correctness_rate": 1.0,
+      "citation_abstention_rate": 0.4118,
       "mean_latency_seconds": 27.6264
     },
     "hybrid": {
@@ -26,6 +27,7 @@
       "mrr": 0.5686,
       "mean_grounding_accuracy": 0.3725,
       "mean_citation_correctness_rate": 1.0,
+      "citation_abstention_rate": 0.3529,
       "mean_latency_seconds": 25.9451
     }
   },
@@ -99,6 +101,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 4,
       "latency_seconds": 29.299,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer"
@@ -120,6 +123,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 3,
       "latency_seconds": 8.224,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer"
@@ -141,6 +145,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 4.751,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer",
@@ -161,6 +166,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 13.016,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer",
@@ -181,6 +187,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 12.191,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -201,6 +208,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 10.657,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -221,6 +229,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 11.479,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -242,6 +251,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 27.151,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -263,6 +273,7 @@
       "reciprocal_rank": 0.3333,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 23.403,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InvalidMigrationPlan"
@@ -284,6 +295,7 @@
       "reciprocal_rank": 0.3333,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 29.391,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InvalidMigrationPlan"
@@ -305,6 +317,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 29.819,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InconsistentMigrationHistory",
@@ -325,6 +338,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 8.504,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InconsistentMigrationHistory",
@@ -345,6 +359,7 @@
       "reciprocal_rank": 0.1,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 10,
       "latency_seconds": 43.718,
       "matched_ground_truth_ids": [
         "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
@@ -366,6 +381,7 @@
       "reciprocal_rank": 0.1,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 11,
       "latency_seconds": 50.878,
       "matched_ground_truth_ids": [
         "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
@@ -387,6 +403,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 4,
       "latency_seconds": 40.84,
       "matched_ground_truth_ids": [
         "forms/fields.py::URLField"
@@ -408,6 +425,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 4,
       "latency_seconds": 31.719,
       "matched_ground_truth_ids": [
         "forms/fields.py::URLField"
@@ -429,6 +447,7 @@
       "reciprocal_rank": 0.3333,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 14.136,
       "matched_ground_truth_ids": [
         "forms/fields.py::BooleanField",
@@ -451,6 +470,7 @@
       "reciprocal_rank": 0.3333,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 33.453,
       "matched_ground_truth_ids": [
         "forms/fields.py::BooleanField",
@@ -473,6 +493,7 @@
       "reciprocal_rank": 0.2,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 47.872,
       "matched_ground_truth_ids": [
         "forms/fields.py::DateField"
@@ -494,6 +515,7 @@
       "reciprocal_rank": 0.2,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 41.713,
       "matched_ground_truth_ids": [
         "forms/fields.py::DateField"
@@ -515,6 +537,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 5,
       "latency_seconds": 37.811,
       "matched_ground_truth_ids": [
         "forms/fields.py::ChoiceField",
@@ -535,6 +558,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 51.899,
       "matched_ground_truth_ids": [
         "forms/fields.py::ChoiceField",
@@ -555,6 +579,7 @@
       "reciprocal_rank": 0.2,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 70.431,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::BooleanField"
@@ -576,6 +601,7 @@
       "reciprocal_rank": 0.2,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 66.753,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::BooleanField"
@@ -597,6 +623,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.3333,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 27.207,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::DateField",
@@ -619,6 +646,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.3333,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 17.796,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::DateField",
@@ -641,6 +669,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 5.302,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::SmallAutoField"
@@ -662,6 +691,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 4,
       "latency_seconds": 31.726,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::SmallAutoField"
@@ -683,6 +713,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 61.193,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::IntegerField",
@@ -705,6 +736,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 5.937,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::IntegerField",
@@ -727,6 +759,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 4.764,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CommaSeparatedIntegerField"
@@ -748,6 +781,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 5.923,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CommaSeparatedIntegerField"
@@ -769,6 +803,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 5.433,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CharField",
@@ -789,6 +824,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 6.326,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CharField",

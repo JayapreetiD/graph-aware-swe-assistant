@@ -15,6 +15,7 @@
       "mrr": 0.5976,
       "mean_grounding_accuracy": 0.5247,
       "mean_citation_correctness_rate": 0.9815,
+      "citation_abstention_rate": 0.0741,
       "mean_latency_seconds": 15.9956
     },
     "hybrid": {
@@ -26,6 +27,7 @@
       "mrr": 0.5976,
       "mean_grounding_accuracy": 0.4846,
       "mean_citation_correctness_rate": 1.0,
+      "citation_abstention_rate": 0.037,
       "mean_latency_seconds": 12.7812
     }
   },
@@ -135,6 +137,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 25.596,
       "matched_ground_truth_ids": [
         "core.py::Context.fail",
@@ -155,6 +158,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 12.729,
       "matched_ground_truth_ids": [
         "core.py::Context.fail",
@@ -175,6 +179,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 0.6667,
       "citation_correctness_rate": 1.0,
+      "citation_count": 10,
       "latency_seconds": 15.546,
       "matched_ground_truth_ids": [
         "core.py::Command._main_shell_completion",
@@ -197,6 +202,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 0.6667,
       "citation_correctness_rate": 1.0,
+      "citation_count": 13,
       "latency_seconds": 10.402,
       "matched_ground_truth_ids": [
         "core.py::Command._main_shell_completion",
@@ -219,6 +225,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 19.405,
       "matched_ground_truth_ids": [
         "core.py::Option.prompt_for_value",
@@ -242,6 +249,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.25,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 6.991,
       "matched_ground_truth_ids": [
         "core.py::Option.prompt_for_value",
@@ -265,6 +273,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 6.432,
       "matched_ground_truth_ids": [
         "globals.py::get_current_context"
@@ -286,6 +295,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 6.012,
       "matched_ground_truth_ids": [
         "decorators.py::pass_context.new_func",
@@ -306,6 +316,7 @@
       "reciprocal_rank": 0.3333,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 10,
       "latency_seconds": 21.292,
       "matched_ground_truth_ids": [
         "_compat.py::open_stream"
@@ -327,6 +338,7 @@
       "reciprocal_rank": 0.3333,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 11,
       "latency_seconds": 15.806,
       "matched_ground_truth_ids": [
         "_compat.py::open_stream"
@@ -348,6 +360,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.3333,
       "citation_correctness_rate": 1.0,
+      "citation_count": 8,
       "latency_seconds": 9.098,
       "matched_ground_truth_ids": [
         "_compat.py::should_strip_ansi"
@@ -370,6 +383,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.3333,
       "citation_correctness_rate": 1.0,
+      "citation_count": 6,
       "latency_seconds": 10.587,
       "matched_ground_truth_ids": [
         "_compat.py::should_strip_ansi"
@@ -392,6 +406,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 6,
       "latency_seconds": 11.897,
       "matched_ground_truth_ids": [
         "core.py::Group.resolve_command",
@@ -412,6 +427,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 6,
       "latency_seconds": 11.807,
       "matched_ground_truth_ids": [
         "core.py::Group.resolve_command",
@@ -432,6 +448,7 @@
       "reciprocal_rank": 0.125,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 3,
       "latency_seconds": 12.073,
       "matched_ground_truth_ids": [
         "_compat.py::term_len"
@@ -453,6 +470,7 @@
       "reciprocal_rank": 0.125,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 8.376,
       "matched_ground_truth_ids": [
         "_compat.py::term_len"
@@ -474,6 +492,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 0.6667,
       "citation_correctness_rate": 1.0,
+      "citation_count": 10,
       "latency_seconds": 24.38,
       "matched_ground_truth_ids": [
         "termui.py::_interpret_color",
@@ -496,6 +515,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 0.6667,
       "citation_correctness_rate": 1.0,
+      "citation_count": 10,
       "latency_seconds": 14.832,
       "matched_ground_truth_ids": [
         "termui.py::_interpret_color",
@@ -518,6 +538,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 18.72,
       "matched_ground_truth_ids": [
         "exceptions.py::BadParameter",
@@ -538,6 +559,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 7.343,
       "matched_ground_truth_ids": [
         "exceptions.py::BadParameter",
@@ -558,6 +580,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 7.348,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -578,6 +601,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 7.146,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -598,6 +622,7 @@
       "reciprocal_rank": 0.2,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 11.45,
       "matched_ground_truth_ids": [
         "utils.py::format_filename"
@@ -619,6 +644,7 @@
       "reciprocal_rank": 0.2,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 15.133,
       "matched_ground_truth_ids": [
         "exceptions.py::FileError.__init__",
@@ -639,6 +665,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 3,
       "latency_seconds": 11.649,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -659,6 +686,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 3,
       "latency_seconds": 13.191,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -679,6 +707,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 0.5,
+      "citation_count": 2,
       "latency_seconds": 7.662,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -699,6 +728,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 8.582,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -719,6 +749,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.6667,
       "citation_correctness_rate": 1.0,
+      "citation_count": 4,
       "latency_seconds": 9.333,
       "matched_ground_truth_ids": [
         "exceptions.py::BadOptionUsage",
@@ -740,6 +771,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.6667,
       "citation_correctness_rate": 1.0,
+      "citation_count": 4,
       "latency_seconds": 11.031,
       "matched_ground_truth_ids": [
         "exceptions.py::BadOptionUsage",
@@ -761,6 +793,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 3,
       "latency_seconds": 11.301,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -782,6 +815,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 5,
       "latency_seconds": 15.135,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -803,6 +837,7 @@
       "reciprocal_rank": 0.1429,
       "grounding_accuracy": 0.3333,
       "citation_correctness_rate": 1.0,
+      "citation_count": 5,
       "latency_seconds": 6.713,
       "matched_ground_truth_ids": [
         "testing.py::make_input_stream"
@@ -825,6 +860,7 @@
       "reciprocal_rank": 0.1429,
       "grounding_accuracy": 0.3333,
       "citation_correctness_rate": 1.0,
+      "citation_count": 4,
       "latency_seconds": 14.745,
       "matched_ground_truth_ids": [
         "testing.py::make_input_stream"
@@ -847,6 +883,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 3,
       "latency_seconds": 10.829,
       "matched_ground_truth_ids": [
         "_compat.py::_AtomicFile",
@@ -867,6 +904,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 3,
       "latency_seconds": 11.86,
       "matched_ground_truth_ids": [
         "_compat.py::_AtomicFile",
@@ -887,6 +925,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.6667,
       "citation_correctness_rate": 1.0,
+      "citation_count": 14,
       "latency_seconds": 15.338,
       "matched_ground_truth_ids": [
         "_termui_impl.py::open_url",
@@ -909,6 +948,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.6667,
       "citation_correctness_rate": 1.0,
+      "citation_count": 11,
       "latency_seconds": 13.699,
       "matched_ground_truth_ids": [
         "_termui_impl.py::open_url",
@@ -931,6 +971,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.3333,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 12.984,
       "matched_ground_truth_ids": [
         "_termui_impl.py::_pipepager"
@@ -953,6 +994,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.3333,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 9.087,
       "matched_ground_truth_ids": [
         "_termui_impl.py::_pipepager"
@@ -975,6 +1017,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.3333,
       "citation_correctness_rate": 1.0,
+      "citation_count": 3,
       "latency_seconds": 9.495,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -996,6 +1039,7 @@
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 17.675,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
@@ -1017,6 +1061,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 6,
       "latency_seconds": 10.833,
       "matched_ground_truth_ids": [
         "_winconsole.py::_get_text_stdin"
@@ -1038,6 +1083,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 6,
       "latency_seconds": 19.154,
       "matched_ground_truth_ids": [
         "_winconsole.py::_get_text_stdin"
@@ -1059,6 +1105,7 @@
       "reciprocal_rank": 0.3333,
       "grounding_accuracy": 0.6667,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 36.26,
       "matched_ground_truth_ids": [
         "exceptions.py::ClickException.__init__",
@@ -1080,6 +1127,7 @@
       "reciprocal_rank": 0.3333,
       "grounding_accuracy": 0.6667,
       "citation_correctness_rate": 1.0,
+      "citation_count": 3,
       "latency_seconds": 9.403,
       "matched_ground_truth_ids": [
         "exceptions.py::ClickException.__init__",
@@ -1101,6 +1149,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 4,
       "latency_seconds": 27.056,
       "matched_ground_truth_ids": [
         "_compat.py::_get_argv_encoding",
@@ -1121,6 +1170,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 3,
       "latency_seconds": 13.489,
       "matched_ground_truth_ids": [
         "_compat.py::_get_argv_encoding",
@@ -1141,6 +1191,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 2,
       "latency_seconds": 18.02,
       "matched_ground_truth_ids": [
         "shell_completion.py::BashComplete._check_version"
@@ -1162,6 +1213,7 @@
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
+      "citation_count": 4,
       "latency_seconds": 20.908,
       "matched_ground_truth_ids": [
         "shell_completion.py::BashComplete._check_version"
@@ -1183,6 +1235,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 0,
       "latency_seconds": 26.382,
       "matched_ground_truth_ids": [
         "termui.py::confirm"
@@ -1206,6 +1259,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 1,
       "latency_seconds": 22.453,
       "matched_ground_truth_ids": [
         "termui.py::confirm"
@@ -1229,6 +1283,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 7,
       "latency_seconds": 34.789,
       "matched_ground_truth_ids": [
         "_textwrap.py::TextWrapper",
@@ -1249,6 +1304,7 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
+      "citation_count": 6,
       "latency_seconds": 17.517,
       "matched_ground_truth_ids": [
         "_textwrap.py::TextWrapper",
@@ -1268,7 +1324,7 @@
         "total_queries": 6,
         "successful_queries": 6,
         "mean_precision_at_k": 0.1779,
-        "mean_recall_at_k": 0.4583,
+        "mean_recall_at_k": 0.4584,
         "mrr": 0.5555,
         "mean_grounding_accuracy": 0.5556,
         "mean_latency_seconds": 27.616
@@ -1277,7 +1333,7 @@
         "total_queries": 6,
         "successful_queries": 6,
         "mean_precision_at_k": 0.1779,
-        "mean_recall_at_k": 0.4583,
+        "mean_recall_at_k": 0.4584,
         "mrr": 0.5555,
         "mean_grounding_accuracy": 0.3889,
         "mean_latency_seconds": 29.268
@@ -1286,7 +1342,7 @@
         "total_queries": 6,
         "successful_queries": 6,
         "mean_precision_at_k": 0.1779,
-        "mean_recall_at_k": 0.4583,
+        "mean_recall_at_k": 0.4584,
         "mrr": 0.5555,
         "mean_grounding_accuracy": 0.5,
         "mean_latency_seconds": 13.7073
@@ -1295,7 +1351,7 @@
         "total_queries": 6,
         "successful_queries": 6,
         "mean_precision_at_k": 0.1779,
-        "mean_recall_at_k": 0.4583,
+        "mean_recall_at_k": 0.4584,
         "mrr": 0.5555,
         "mean_grounding_accuracy": 0.5556,
         "mean_latency_seconds": 32.6613
