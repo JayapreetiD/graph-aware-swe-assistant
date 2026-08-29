@@ -24,7 +24,7 @@ This is a genuinely different result from click, where hybrid showed a real (if 
 | Recall@K | 0.6078 | 0.6078 | Identical |
 | MRR | 0.5686 | 0.5686 | Identical |
 | Grounding accuracy | 0.3431 | 0.3725 | Hybrid slightly higher (+0.029) |
-| Citation correctness | 1.0000 | 1.0000 | Identical (see caveat below) |
+| Citation correctness | 1.0000 | 1.0000 | Identical — **38% abstention, see caveat below, not a clean result** |
 | Latency (s) | 27.6264 | 25.9451 | Hybrid slightly faster |
 
 **Win/loss (same rule as click: recall must be strictly higher AND grounding not worse):**
@@ -33,9 +33,11 @@ This is a genuinely different result from click, where hybrid showed a real (if 
 - `tied_or_mixed`: 17 queries (100%)
 - `incomplete`: 0
 
-## The Citation-Correctness Caveat Still Applies
+## The Citation-Correctness Caveat Still Applies — And Is Far More Severe Here Than In Click
 
-Both modes show a perfect 1.0 citation correctness rate here. Per the finding already documented for click (`docs/analysis_notes.md`), a perfect score can mean the LLM cited nothing at all rather than cited everything correctly — this needs the same scrutiny before being reported as unambiguously good. Given the low grounding-accuracy numbers here (0.34–0.37, meaningfully lower than click's ~0.48–0.52), it's worth checking Django's raw results for citation-abstention cases before treating "1.0 citation correctness" as a positive finding rather than an artifact of low citation volume.
+Both modes show a perfect 1.0 citation correctness rate here, but this is **not evidence of good grounding behavior in this benchmark** — it is overwhelmingly an artifact of abstention. A direct check of the raw results found **13 of 34 successful calls (38%) produced zero citations at all**, each trivially scoring a "perfect" 1.0 by the `valid/total` formula. This is a much larger and more systemic pattern than the single isolated case documented for click (`docs/analysis_notes.md`, q14) — there it was one query out of 54; here it's over a third of the entire benchmark.
+
+Notably, five queries (dj04, dj06, dj09, dj10, dj15) were zero-citation in **both** modes simultaneously — meaning the LLM consistently declined to cite anything for these specific questions regardless of retrieval method. This points to something about the questions themselves or the shape of the retrieved context for this codebase, not a semantic-vs-hybrid difference. **Any reporting of citation correctness for Django must lead with this 38% abstention rate, not the misleadingly perfect 1.0 average** — the two headline numbers (`mean citation correctness: 1.0` for both modes) should not appear in a summary table without this context immediately beside them.
 
 ## By Category
 
@@ -60,4 +62,26 @@ Both modes show a perfect 1.0 citation correctness rate here. Per the finding al
 
 ## Draft Conclusion (edit before final submission)
 
-On this scoped Django subset, graph-aware hybrid retrieval showed **no measurable improvement over semantic-only retrieval** in precision, recall, or MRR — a result that stands in real contrast to click, where hybrid showed a modest but consistent recall advantage. The most likely explanation is structural: click's benchmark drew on genuine multi-hop cross-file call chains, which is exactly the kind of relationship graph expansion is built to surface; this Django subset's benchmark, by necessity of what the codebase actually offered, drew almost entirely on same-file inheritance, which semantic search can already find without graph traversal. This is not a null result to discard — it's evidence that **hybrid retrieval's value is contingent on a codebase's actual dependency shape**, not a universal property of the technique. The comparison between these two repos is more informative together than either is alone: click shows hybrid can help when cross-file call chains exist; Django shows it adds nothing when the relevant structure is same-file inheritance instead.
+On this scoped Django subset, graph-aware hybrid retrieval showed **no measurable improvement over semantic-only retrieval** in precision, recall, or MRR — a result that stands in real contrast to click, where hybrid showed a modest but consistent recall advantage. The most likely explanation is structural: click's benchmark drew on genuine multi-hop cross-file call chains, which is exactly the kind of relationship graph expansion is built to surface; this Django subset's benchmark, by necessity of what the codebase actually offered, drew almost entirely on same-file inheritance, which semantic search can already find without graph traversal. This is not a null result to discard — it's evidence that **hybrid retrieval's value is contingent on a codebase's actual dependency shape**, not a universal property of the technique.
+
+A second, independent finding is at least as important: **38% of Django's benchmark calls produced no citations at all**, inflating citation correctness to a meaningless 1.0. This citation-abstention pattern was already flagged as a risk from a single click example (`docs/analysis_notes.md`); Django's results confirm it generalizes and is severe enough to actively distort any summary statistic that reports citation correctness without citation count alongside it. Any future iteration of this project's LLM/prompt design should treat citation abstention as a first-class failure mode to measure and reduce, not a footnote.
+
+The comparison between these two repos is more informative together than either is alone: click shows hybrid can help when cross-file call chains exist; Django shows it adds nothing when the relevant structure is same-file inheritance instead — and Django additionally surfaces a citation-behavior problem that was easy to miss when it appeared only once in click's data.
+
+## UPDATE: Citation-abstention confirmed to generalize (Django benchmark)
+
+The action item above has been resolved with real evidence. A direct check
+of Django's 34-call benchmark found **13/34 calls (38%) produced zero
+citations**, each trivially scoring a "perfect" 1.0 citation correctness.
+Five queries (dj04, dj06, dj09, dj10, dj15) were zero-citation in BOTH
+modes simultaneously. This is no longer a single-example curiosity — it is
+a systemic pattern, more severe in Django's benchmark than click's (1/54).
+
+**Recommendation for any future iteration**: citation correctness should
+never be reported as a standalone metric again. At minimum, always report
+it alongside citation count/coverage (e.g. "X% of calls produced zero
+citations"). A more robust fix would be a dedicated
+`grounding_attempt_rate` metric (fraction of successful calls with >=1
+citation) computed separately in `metrics.py`, so a future evaluator can
+see abstention rate directly without having to re-derive it from raw
+results the way this check did.
