@@ -1,3 +1,5 @@
+
+
 """
 evaluation/metrics.py
 
@@ -66,6 +68,9 @@ class QueryMetrics:
     reciprocal_rank: float | None
     grounding_accuracy: float | None
     citation_correctness_rate: float | None
+    citation_count: int  # NEW: raw citation count, regardless of validity.
+    # citation_correctness_rate trivially scores 1.0 when this is 0
+    # (abstention, not accuracy) -- always report both together.
     latency_seconds: float | None
     matched_ground_truth_ids: list[str]
     unmatched_ground_truth_ids: list[str]
@@ -233,6 +238,7 @@ def compute_query_metrics(record: dict[str, Any]) -> QueryMetrics:
             reciprocal_rank=None,
             grounding_accuracy=None,
             citation_correctness_rate=None,
+            citation_count=0,
             latency_seconds=record.get("latency_seconds"),
             matched_ground_truth_ids=[],
             unmatched_ground_truth_ids=sorted(_node_ids(ground_truth)),
@@ -249,6 +255,7 @@ def compute_query_metrics(record: dict[str, Any]) -> QueryMetrics:
         expected_hybrid_advantage=record.get("expected_hybrid_advantage", False),
         success=True,
         citation_correctness_rate=record.get("citation_correctness_rate"),
+        citation_count=len(record.get("citations", [])),
         latency_seconds=record.get("latency_seconds"),
         **scored,
     )
@@ -271,6 +278,7 @@ class AblationQueryMetrics:
     reciprocal_rank: float | None
     grounding_accuracy: float | None
     citation_correctness_rate: float | None
+    citation_count: int
     latency_seconds: float | None
     reused_from_main_benchmark: bool
     reuse_confidence: str
@@ -299,6 +307,7 @@ def compute_ablation_query_metrics(record: dict[str, Any]) -> AblationQueryMetri
             reciprocal_rank=None,
             grounding_accuracy=None,
             citation_correctness_rate=None,
+            citation_count=0,
             latency_seconds=record.get("latency_seconds"),
             reused_from_main_benchmark=record.get("reused_from_main_benchmark", False),
             reuse_confidence=record.get("reuse_confidence", ""),
@@ -316,6 +325,7 @@ def compute_ablation_query_metrics(record: dict[str, Any]) -> AblationQueryMetri
         category=record.get("category", "unknown"),
         success=True,
         citation_correctness_rate=record.get("citation_correctness_rate"),
+        citation_count=len(record.get("citations", [])),
         latency_seconds=record.get("latency_seconds"),
         reused_from_main_benchmark=record.get("reused_from_main_benchmark", False),
         reuse_confidence=record.get("reuse_confidence", ""),
@@ -422,6 +432,13 @@ def aggregate_by_mode(query_metrics: list[QueryMetrics]) -> dict[str, dict[str, 
             "mean_citation_correctness_rate": _mean(
                 [q.citation_correctness_rate for q in successful]
             ),
+            "citation_abstention_rate": round(
+                sum(1 for q in successful if q.citation_count == 0) / len(successful), 4
+            ) if successful else None,  # NEW: fraction of successful calls with
+            # ZERO citations -- must be reported alongside
+            # mean_citation_correctness_rate, since a high correctness mean
+            # with a high abstention rate means "mostly didn't cite," not
+            # "mostly cited correctly."
             "mean_latency_seconds": _mean([q.latency_seconds for q in successful]),
         }
     return summary
@@ -494,6 +511,7 @@ def print_summary(
         ("mrr", "MRR"),
         ("mean_grounding_accuracy", "mean grounding accuracy"),
         ("mean_citation_correctness_rate", "mean citation correctness"),
+        ("citation_abstention_rate", "citation abstention rate"),
         ("mean_latency_seconds", "mean latency (s)"),
     ]
     sem = by_mode.get("semantic", {})
