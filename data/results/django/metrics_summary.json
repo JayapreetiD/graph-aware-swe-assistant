@@ -10,25 +10,25 @@
       "total_queries": 17,
       "successful_queries": 17,
       "failed_queries": 0,
-      "mean_precision_at_k": 0.1638,
-      "mean_recall_at_k": 0.6078,
-      "mrr": 0.5686,
-      "mean_grounding_accuracy": 0.3431,
+      "mean_precision_at_k": 0.1597,
+      "mean_recall_at_k": 0.549,
+      "mrr": 0.5569,
+      "mean_grounding_accuracy": 0.4461,
       "mean_citation_correctness_rate": 1.0,
-      "citation_abstention_rate": 0.4118,
-      "mean_latency_seconds": 27.6264
+      "citation_abstention_rate": 0.2941,
+      "mean_latency_seconds": 18.4549
     },
     "hybrid": {
       "total_queries": 17,
       "successful_queries": 17,
       "failed_queries": 0,
-      "mean_precision_at_k": 0.1638,
-      "mean_recall_at_k": 0.6078,
-      "mrr": 0.5686,
-      "mean_grounding_accuracy": 0.3725,
-      "mean_citation_correctness_rate": 1.0,
-      "citation_abstention_rate": 0.3529,
-      "mean_latency_seconds": 25.9451
+      "mean_precision_at_k": 0.1597,
+      "mean_recall_at_k": 0.549,
+      "mrr": 0.5569,
+      "mean_grounding_accuracy": 0.4559,
+      "mean_citation_correctness_rate": 0.9706,
+      "citation_abstention_rate": 0.2941,
+      "mean_latency_seconds": 20.685
     }
   },
   "by_category_and_mode": {
@@ -36,54 +36,54 @@
       "semantic": {
         "total_queries": 7,
         "successful_queries": 7,
-        "mean_precision_at_k": 0.1061,
+        "mean_precision_at_k": 0.1214,
         "mean_recall_at_k": 0.5,
         "mrr": 0.419,
-        "mean_grounding_accuracy": 0.4286
+        "mean_grounding_accuracy": 0.5714
       },
       "hybrid": {
         "total_queries": 7,
         "successful_queries": 7,
-        "mean_precision_at_k": 0.1061,
+        "mean_precision_at_k": 0.1214,
         "mean_recall_at_k": 0.5,
         "mrr": 0.419,
-        "mean_grounding_accuracy": 0.4286
+        "mean_grounding_accuracy": 0.5714
       }
     },
     "same_file_inherit_shallow": {
       "semantic": {
         "total_queries": 6,
         "successful_queries": 6,
-        "mean_precision_at_k": 0.1514,
-        "mean_recall_at_k": 0.6667,
+        "mean_precision_at_k": 0.1441,
+        "mean_recall_at_k": 0.5833,
         "mrr": 0.7,
-        "mean_grounding_accuracy": 0.4167
+        "mean_grounding_accuracy": 0.5
       },
       "hybrid": {
         "total_queries": 6,
         "successful_queries": 6,
-        "mean_precision_at_k": 0.1514,
-        "mean_recall_at_k": 0.6667,
+        "mean_precision_at_k": 0.1441,
+        "mean_recall_at_k": 0.5833,
         "mrr": 0.7,
-        "mean_grounding_accuracy": 0.5
+        "mean_grounding_accuracy": 0.5833
       }
     },
     "same_file_inherit_deep": {
       "semantic": {
         "total_queries": 4,
         "successful_queries": 4,
-        "mean_precision_at_k": 0.2833,
-        "mean_recall_at_k": 0.7084,
-        "mrr": 0.6333,
-        "mean_grounding_accuracy": 0.0833
+        "mean_precision_at_k": 0.25,
+        "mean_recall_at_k": 0.5834,
+        "mrr": 0.5833,
+        "mean_grounding_accuracy": 0.1458
       },
       "hybrid": {
         "total_queries": 4,
         "successful_queries": 4,
-        "mean_precision_at_k": 0.2833,
-        "mean_recall_at_k": 0.7084,
-        "mrr": 0.6333,
-        "mean_grounding_accuracy": 0.0833
+        "mean_precision_at_k": 0.25,
+        "mean_recall_at_k": 0.5834,
+        "mrr": 0.5833,
+        "mean_grounding_accuracy": 0.0625
       }
     }
   },
@@ -94,15 +94,15 @@
       "category": "cross_file_1hop",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 7,
+      "k_retrieved": 4,
       "ground_truth_count": 2,
-      "precision_at_k": 0.1429,
+      "precision_at_k": 0.25,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
-      "citation_count": 4,
-      "latency_seconds": 29.299,
+      "citation_count": 2,
+      "latency_seconds": 22.705,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer"
       ],
@@ -116,15 +116,15 @@
       "category": "cross_file_1hop",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 7,
+      "k_retrieved": 4,
       "ground_truth_count": 2,
-      "precision_at_k": 0.1429,
+      "precision_at_k": 0.25,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
       "citation_count": 3,
-      "latency_seconds": 8.224,
+      "latency_seconds": 20.346,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer"
       ],
@@ -146,7 +146,7 @@
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
       "citation_count": 2,
-      "latency_seconds": 4.751,
+      "latency_seconds": 23.691,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer",
         "forms/widgets.py::Widget._render"
@@ -167,7 +167,7 @@
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
       "citation_count": 2,
-      "latency_seconds": 13.016,
+      "latency_seconds": 21.958,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer",
         "forms/widgets.py::Widget._render"
@@ -180,15 +180,15 @@
       "category": "cross_file_1hop",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 8,
+      "k_retrieved": 1,
       "ground_truth_count": 2,
       "precision_at_k": 0.0,
       "recall_at_k": 0.0,
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
-      "citation_count": 1,
-      "latency_seconds": 12.191,
+      "citation_count": 0,
+      "latency_seconds": 27.104,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
         "db/models/fields/related.py::ManyToManyField.contribute_to_class",
@@ -201,15 +201,15 @@
       "category": "cross_file_1hop",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 8,
+      "k_retrieved": 1,
       "ground_truth_count": 2,
       "precision_at_k": 0.0,
       "recall_at_k": 0.0,
       "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
-      "citation_count": 1,
-      "latency_seconds": 10.657,
+      "citation_count": 0,
+      "latency_seconds": 9.191,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
         "db/models/fields/related.py::ManyToManyField.contribute_to_class",
@@ -222,7 +222,7 @@
       "category": "cross_file_1hop",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 3,
+      "k_retrieved": 1,
       "ground_truth_count": 3,
       "precision_at_k": 0.0,
       "recall_at_k": 0.0,
@@ -230,7 +230,7 @@
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
       "citation_count": 0,
-      "latency_seconds": 11.479,
+      "latency_seconds": 13.556,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
         "db/migrations/executor.py::MigrationExecutor.__init__",
@@ -244,7 +244,7 @@
       "category": "cross_file_1hop",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 3,
+      "k_retrieved": 1,
       "ground_truth_count": 3,
       "precision_at_k": 0.0,
       "recall_at_k": 0.0,
@@ -252,7 +252,7 @@
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
       "citation_count": 0,
-      "latency_seconds": 27.151,
+      "latency_seconds": 36.916,
       "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
         "db/migrations/executor.py::MigrationExecutor.__init__",
@@ -274,7 +274,7 @@
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
       "citation_count": 1,
-      "latency_seconds": 23.403,
+      "latency_seconds": 15.35,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InvalidMigrationPlan"
       ],
@@ -294,9 +294,9 @@
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.3333,
       "grounding_accuracy": 0.5,
-      "citation_correctness_rate": 1.0,
+      "citation_correctness_rate": 0.5,
       "citation_count": 2,
-      "latency_seconds": 29.391,
+      "latency_seconds": 56.431,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InvalidMigrationPlan"
       ],
@@ -315,10 +315,10 @@
       "precision_at_k": 0.2,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "grounding_accuracy": 0.0,
+      "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
-      "citation_count": 0,
-      "latency_seconds": 29.819,
+      "citation_count": 2,
+      "latency_seconds": 14.553,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InconsistentMigrationHistory",
         "db/migrations/loader.py::MigrationLoader.check_consistent_history"
@@ -336,10 +336,10 @@
       "precision_at_k": 0.2,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "grounding_accuracy": 0.0,
+      "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
-      "citation_count": 0,
-      "latency_seconds": 8.504,
+      "citation_count": 2,
+      "latency_seconds": 37.093,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InconsistentMigrationHistory",
         "db/migrations/loader.py::MigrationLoader.check_consistent_history"
@@ -360,7 +360,7 @@
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
       "citation_count": 10,
-      "latency_seconds": 43.718,
+      "latency_seconds": 17.574,
       "matched_ground_truth_ids": [
         "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
       ],
@@ -381,8 +381,8 @@
       "reciprocal_rank": 0.1,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
-      "citation_count": 11,
-      "latency_seconds": 50.878,
+      "citation_count": 7,
+      "latency_seconds": 9.607,
       "matched_ground_truth_ids": [
         "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
       ],
@@ -404,7 +404,7 @@
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
       "citation_count": 4,
-      "latency_seconds": 40.84,
+      "latency_seconds": 12.237,
       "matched_ground_truth_ids": [
         "forms/fields.py::URLField"
       ],
@@ -425,8 +425,8 @@
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
-      "citation_count": 4,
-      "latency_seconds": 31.719,
+      "citation_count": 3,
+      "latency_seconds": 19.844,
       "matched_ground_truth_ids": [
         "forms/fields.py::URLField"
       ],
@@ -448,7 +448,7 @@
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
       "citation_count": 0,
-      "latency_seconds": 14.136,
+      "latency_seconds": 31.954,
       "matched_ground_truth_ids": [
         "forms/fields.py::BooleanField",
         "forms/fields.py::NullBooleanField"
@@ -471,7 +471,7 @@
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
       "citation_count": 0,
-      "latency_seconds": 33.453,
+      "latency_seconds": 21.355,
       "matched_ground_truth_ids": [
         "forms/fields.py::BooleanField",
         "forms/fields.py::NullBooleanField"
@@ -488,18 +488,17 @@
       "success": true,
       "k_retrieved": 5,
       "ground_truth_count": 2,
-      "precision_at_k": 0.2,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 0.2,
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
       "citation_count": 0,
-      "latency_seconds": 47.872,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::DateField"
-      ],
+      "latency_seconds": 24.129,
+      "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
-        "forms/fields.py::BaseTemporalField"
+        "forms/fields.py::BaseTemporalField",
+        "forms/fields.py::DateField"
       ]
     },
     {
@@ -510,18 +509,17 @@
       "success": true,
       "k_retrieved": 5,
       "ground_truth_count": 2,
-      "precision_at_k": 0.2,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 0.2,
+      "precision_at_k": 0.0,
+      "recall_at_k": 0.0,
+      "reciprocal_rank": 0.0,
       "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
       "citation_count": 0,
-      "latency_seconds": 41.713,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::DateField"
-      ],
+      "latency_seconds": 10.236,
+      "matched_ground_truth_ids": [],
       "unmatched_ground_truth_ids": [
-        "forms/fields.py::BaseTemporalField"
+        "forms/fields.py::BaseTemporalField",
+        "forms/fields.py::DateField"
       ]
     },
     {
@@ -530,15 +528,15 @@
       "category": "same_file_inherit_shallow",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 8,
+      "k_retrieved": 7,
       "ground_truth_count": 2,
-      "precision_at_k": 0.25,
+      "precision_at_k": 0.2857,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
-      "citation_count": 5,
-      "latency_seconds": 37.811,
+      "citation_count": 4,
+      "latency_seconds": 11.414,
       "matched_ground_truth_ids": [
         "forms/fields.py::ChoiceField",
         "forms/fields.py::TypedChoiceField"
@@ -551,15 +549,15 @@
       "category": "same_file_inherit_shallow",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 8,
+      "k_retrieved": 7,
       "ground_truth_count": 2,
-      "precision_at_k": 0.25,
+      "precision_at_k": 0.2857,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
       "grounding_accuracy": 1.0,
       "citation_correctness_rate": 1.0,
-      "citation_count": 2,
-      "latency_seconds": 51.899,
+      "citation_count": 4,
+      "latency_seconds": 11.168,
       "matched_ground_truth_ids": [
         "forms/fields.py::ChoiceField",
         "forms/fields.py::TypedChoiceField"
@@ -577,10 +575,10 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.2,
-      "grounding_accuracy": 0.5,
+      "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
-      "citation_count": 1,
-      "latency_seconds": 70.431,
+      "citation_count": 0,
+      "latency_seconds": 10.835,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::BooleanField"
       ],
@@ -599,10 +597,10 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.2,
-      "grounding_accuracy": 0.0,
+      "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
-      "citation_count": 0,
-      "latency_seconds": 66.753,
+      "citation_count": 1,
+      "latency_seconds": 15.746,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::BooleanField"
       ],
@@ -616,15 +614,15 @@
       "category": "same_file_inherit_deep",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 6,
+      "k_retrieved": 5,
       "ground_truth_count": 3,
-      "precision_at_k": 0.3333,
+      "precision_at_k": 0.4,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.3333,
       "citation_correctness_rate": 1.0,
       "citation_count": 1,
-      "latency_seconds": 27.207,
+      "latency_seconds": 39.077,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::DateField",
         "db/models/fields/__init__.py::DateTimeField"
@@ -639,15 +637,15 @@
       "category": "same_file_inherit_deep",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 6,
+      "k_retrieved": 5,
       "ground_truth_count": 3,
-      "precision_at_k": 0.3333,
+      "precision_at_k": 0.4,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 1.0,
-      "grounding_accuracy": 0.3333,
+      "grounding_accuracy": 0.0,
       "citation_correctness_rate": 1.0,
-      "citation_count": 1,
-      "latency_seconds": 17.796,
+      "citation_count": 0,
+      "latency_seconds": 24.773,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::DateField",
         "db/models/fields/__init__.py::DateTimeField"
@@ -667,10 +665,10 @@
       "precision_at_k": 0.1111,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.5,
-      "grounding_accuracy": 0.0,
+      "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
-      "citation_count": 0,
-      "latency_seconds": 5.302,
+      "citation_count": 4,
+      "latency_seconds": 25.318,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::SmallAutoField"
       ],
@@ -692,7 +690,7 @@
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
       "citation_count": 4,
-      "latency_seconds": 31.726,
+      "latency_seconds": 25.64,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::SmallAutoField"
       ],
@@ -711,10 +709,10 @@
       "precision_at_k": 0.4,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "grounding_accuracy": 0.0,
+      "grounding_accuracy": 0.25,
       "citation_correctness_rate": 1.0,
-      "citation_count": 0,
-      "latency_seconds": 61.193,
+      "citation_count": 2,
+      "latency_seconds": 10.32,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::IntegerField",
         "db/models/fields/__init__.py::PositiveIntegerRelDbTypeMixin",
@@ -734,10 +732,10 @@
       "precision_at_k": 0.4,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "grounding_accuracy": 0.0,
+      "grounding_accuracy": 0.25,
       "citation_correctness_rate": 1.0,
-      "citation_count": 0,
-      "latency_seconds": 5.937,
+      "citation_count": 1,
+      "latency_seconds": 10.73,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::IntegerField",
         "db/models/fields/__init__.py::PositiveIntegerRelDbTypeMixin",
@@ -760,7 +758,7 @@
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
       "citation_count": 1,
-      "latency_seconds": 4.764,
+      "latency_seconds": 6.97,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CommaSeparatedIntegerField"
       ],
@@ -782,7 +780,7 @@
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
       "citation_count": 1,
-      "latency_seconds": 5.923,
+      "latency_seconds": 9.478,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CommaSeparatedIntegerField"
       ],
@@ -796,20 +794,21 @@
       "category": "same_file_inherit_shallow",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 9,
+      "k_retrieved": 7,
       "ground_truth_count": 2,
-      "precision_at_k": 0.2222,
-      "recall_at_k": 1.0,
+      "precision_at_k": 0.1429,
+      "recall_at_k": 0.5,
       "reciprocal_rank": 1.0,
-      "grounding_accuracy": 0.0,
+      "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
-      "citation_count": 0,
-      "latency_seconds": 5.433,
+      "citation_count": 1,
+      "latency_seconds": 6.946,
       "matched_ground_truth_ids": [
-        "db/models/fields/__init__.py::CharField",
         "db/models/fields/__init__.py::SlugField"
       ],
-      "unmatched_ground_truth_ids": []
+      "unmatched_ground_truth_ids": [
+        "db/models/fields/__init__.py::CharField"
+      ]
     },
     {
       "query_id": "dj17",
@@ -817,20 +816,21 @@
       "category": "same_file_inherit_shallow",
       "expected_hybrid_advantage": true,
       "success": true,
-      "k_retrieved": 9,
+      "k_retrieved": 7,
       "ground_truth_count": 2,
-      "precision_at_k": 0.2222,
-      "recall_at_k": 1.0,
+      "precision_at_k": 0.1429,
+      "recall_at_k": 0.5,
       "reciprocal_rank": 1.0,
       "grounding_accuracy": 0.5,
       "citation_correctness_rate": 1.0,
       "citation_count": 1,
-      "latency_seconds": 6.326,
+      "latency_seconds": 11.133,
       "matched_ground_truth_ids": [
-        "db/models/fields/__init__.py::CharField",
         "db/models/fields/__init__.py::SlugField"
       ],
-      "unmatched_ground_truth_ids": []
+      "unmatched_ground_truth_ids": [
+        "db/models/fields/__init__.py::CharField"
+      ]
     }
   ],
   "ablation": {}
