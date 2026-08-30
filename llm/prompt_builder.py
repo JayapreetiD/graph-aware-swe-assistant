@@ -3,16 +3,12 @@
 """
 llm/prompt_builder.py
 
-Responsibility: convert a ranked list of retrieved code chunks + a user
+Single responsibility: assemble retrieved chunks and the user's
 question into a single, fixed-token-budget prompt string for the LLM.
 
 This is the ONE place where "context budget" is enforced. Both
-SemanticRetriever and HybridRetriever produce the same chunk shape
-(list of dicts with node_id, filepath, start_line, end_line, code, etc.),
-so this file is retrieval-mode-agnostic by design — Phase 5 depends on
-that: semantic-only and hybrid runs MUST go through the exact same
-prompt construction logic, or a difference in results could be caused
-by prompt differences instead of retrieval differences.
+semantic-only and hybrid retrieval feed chunks through this same
+function, so the prompt-assembly logic is retrieval-mode-agnostic.
 """
 
 from __future__ import annotations
@@ -25,7 +21,6 @@ import tiktoken
 logger = logging.getLogger(__name__)
 
 CONTEXT_TOKEN_BUDGET = 4000
-
 # Reserve some of the budget for the question, instructions, and
 # formatting overhead — not just raw code. Without this, a large
 # question or verbose instructions could push the total over budget
@@ -73,7 +68,6 @@ def _format_chunk(chunk: dict) -> str:
         header += f"Signature: {chunk['signature']}\n"
     if chunk.get("docstring"):
         header += f'Docstring: "{chunk["docstring"]}"\n'
-
     return f"{header}\n```python\n{chunk['code']}\n```\n"
 
 
@@ -82,45 +76,96 @@ def build_prompt(question: str, chunks: list[dict]) -> PromptResult:
     Build a fixed-budget prompt from ranked chunks (highest-relevance
     first — caller's ranking order is trusted and preserved).
 
-    Truncation policy: chunks are added in the given order until the
-    NEXT chunk would exceed CHUNK_TOKEN_BUDGET, then stop. This means
-    lowest-ranked chunks are dropped first, which is what you want —
-    the retriever already did the ranking work; the prompt builder's
-    only job is to respect the budget, not re-rank.
+    Truncation policy: chunks are added in the given order. If a chunk
+    fits in the remaining budget, it's added whole. If a chunk does NOT
+    fit, it is TRUNCATED to fit the remaining space (header + signature +
+    docstring + as much of the code body as fits, marked with an
+    explicit "...truncated..." notice) rather than dropped entirely.
+
+    FIX (see project notes): the previous policy skipped any chunk whose
+    full size exceeded the *entire* CHUNK_TOKEN_BUDGET, even before any
+    other chunk had used any space. This made large but highly relevant
+    classes (e.g. a 7934-token Field class that is real ground truth for
+    several benchmark queries) structurally unreachable regardless of
+    retrieval ranking. Truncating instead of skipping means an oversized,
+    genuinely relevant chunk still contributes its citation-critical
+    header info and as much real code as space allows, rather than
+    contributing nothing.
+
+    A chunk is only fully skipped now if there is negligible space left
+    (less than MIN_TRUNCATED_CHUNK_TOKENS) to make truncation worthwhile.
     """
     context_blocks: list[str] = []
     chunks_used: list[dict] = []
     running_tokens = 0
 
+    MIN_TRUNCATED_CHUNK_TOKENS = 150  # below this, truncation isn't useful
+
     for chunk in chunks:
+        remaining = CHUNK_TOKEN_BUDGET - running_tokens
+        if remaining < MIN_TRUNCATED_CHUNK_TOKENS:
+            logger.info(
+                "Skipping chunk %s -- negligible budget remaining (%d tokens left)",
+                chunk.get("node_id", "?"), remaining,
+            )
+            continue
+
         block = _format_chunk(chunk)
         block_tokens = _count_tokens(block)
 
-        if running_tokens + block_tokens > CHUNK_TOKEN_BUDGET:
+        if block_tokens <= remaining:
+            context_blocks.append(block)
+            chunks_used.append(chunk)
+            running_tokens += block_tokens
+            continue
+
+        header = (
+            f"### {chunk['node_id']}\n"
+            f"File: {chunk['filepath']} (lines {chunk['start_line']}-{chunk['end_line']})\n"
+        )
+        if chunk.get("signature"):
+            header += f"Signature: {chunk['signature']}\n"
+        if chunk.get("docstring"):
+            header += f'Docstring: "{chunk["docstring"]}"\n'
+        header_tokens = _count_tokens(header)
+
+        code_budget_tokens = remaining - header_tokens - 30
+        if code_budget_tokens < MIN_TRUNCATED_CHUNK_TOKENS:
             logger.info(
-                "Skipping oversized chunk %s (%d tokens, would exceed budget)",
-                chunk.get("node_id", "?"), block_tokens,
+                "Skipping chunk %s -- not enough space even for a truncated body",
+                chunk.get("node_id", "?"),
             )
             continue
+
+        code_tokens = _ENCODING.encode(chunk["code"])
+        truncated_code = _ENCODING.decode(code_tokens[:code_budget_tokens])
+
+        block = (
+            f"{header}\n```python\n{truncated_code}\n"
+            f"# ... [TRUNCATED: {len(code_tokens) - code_budget_tokens} more tokens omitted "
+            f"to fit context budget -- full code is at {chunk['filepath']}:{chunk['start_line']}-{chunk['end_line']}]\n"
+            f"```\n"
+        )
+        block_tokens = _count_tokens(block)
+
+        logger.info(
+            "Truncated oversized chunk %s: %d tokens -> %d tokens (kept header + %d/%d code tokens)",
+            chunk.get("node_id", "?"), header_tokens + len(code_tokens), block_tokens,
+            code_budget_tokens, len(code_tokens),
+        )
 
         context_blocks.append(block)
         chunks_used.append(chunk)
         running_tokens += block_tokens
 
     context_text = "\n".join(context_blocks) if context_blocks else "(No relevant code context found.)"
-
     prompt = (
         f"{SYSTEM_INSTRUCTIONS}\n"
         f"## Code Context\n\n{context_text}\n"
         f"## Question\n{question}\n"
     )
-
     total_tokens = _count_tokens(prompt)
-
     if total_tokens > CONTEXT_TOKEN_BUDGET:
-        # Should be rare given the reserved overhead margin, but log
-        # loudly if it happens — it means RESERVED_TOKENS_FOR_OVERHEAD
-        # needs to be raised.
         logger.warning(
             "Prompt exceeded CONTEXT_TOKEN_BUDGET: %d > %d tokens",
             total_tokens, CONTEXT_TOKEN_BUDGET,
@@ -132,29 +177,3 @@ def build_prompt(question: str, chunks: list[dict]) -> PromptResult:
         chunks_dropped=len(chunks) - len(chunks_used),
         total_tokens=total_tokens,
     )
-
-
-if __name__ == "__main__":
-    # Minimal smoke test using fake chunks — no dependency on the
-    # retriever, graph, or Qdrant. Just verifies budget math and
-    # formatting work correctly in isolation.
-    fake_chunks = [
-        {
-            "node_id": f"click/core.py::fake_func_{i}",
-            "filepath": "click/core.py",
-            "start_line": i * 10,
-            "end_line": i * 10 + 8,
-            "signature": f"def fake_func_{i}(x: int) -> int:",
-            "docstring": "A fake function for testing.",
-            "code": f"def fake_func_{i}(x: int) -> int:\n    return x + {i}",
-        }
-        for i in range(50)  # deliberately more than will fit, to test truncation
-    ]
-
-    result = build_prompt("How does fake_func_3 work?", fake_chunks)
-
-    print(f"Chunks used: {len(result.chunks_used)} / {len(fake_chunks)}")
-    print(f"Chunks dropped: {result.chunks_dropped}")
-    print(f"Total tokens: {result.total_tokens} (budget: {CONTEXT_TOKEN_BUDGET})")
-    print("\n--- First 500 chars of prompt ---")
-    print(result.prompt[:500])
