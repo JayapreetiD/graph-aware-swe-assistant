@@ -21,12 +21,19 @@ import tiktoken
 logger = logging.getLogger(__name__)
 
 CONTEXT_TOKEN_BUDGET = 4000
-# Reserve some of the budget for the question, instructions, and
-# formatting overhead — not just raw code. Without this, a large
-# question or verbose instructions could push the total over budget
-# even after chunks are trimmed to fit.
 RESERVED_TOKENS_FOR_OVERHEAD = 500
 CHUNK_TOKEN_BUDGET = CONTEXT_TOKEN_BUDGET - RESERVED_TOKENS_FOR_OVERHEAD
+
+# CAP on how much space a single TRUNCATED chunk may consume, even if
+# more space is technically available. Without this, one huge class
+# (e.g. Field at 7929 tokens) can crowd out several smaller, equally
+# relevant chunks within the same fixed budget -- confirmed empirically:
+# an end-to-end Django rerun after the first truncation fix showed
+# recall going DOWN in places, likely because one truncated giant chunk
+# consumed space that would otherwise have fit 2-3 smaller relevant
+# chunks. This cap gives an oversized chunk a meaningful preview without
+# letting it dominate the whole prompt.
+MAX_TRUNCATED_CHUNK_TOKENS = 900
 
 _ENCODING = tiktoken.get_encoding("cl100k_base")
 
@@ -54,12 +61,6 @@ def _count_tokens(text: str) -> int:
 
 
 def _format_chunk(chunk: dict) -> str:
-    """
-    Render one chunk as a labeled block. The label is deliberately
-    explicit and repeated (node_id AND file:line) so the LLM has an
-    unambiguous, copy-pasteable citation target — this directly
-    supports the citation-verification step later in Phase 4.
-    """
     header = (
         f"### {chunk['node_id']}\n"
         f"File: {chunk['filepath']} (lines {chunk['start_line']}-{chunk['end_line']})\n"
@@ -74,32 +75,16 @@ def _format_chunk(chunk: dict) -> str:
 def build_prompt(question: str, chunks: list[dict]) -> PromptResult:
     """
     Build a fixed-budget prompt from ranked chunks (highest-relevance
-    first — caller's ranking order is trusted and preserved).
-
-    Truncation policy: chunks are added in the given order. If a chunk
-    fits in the remaining budget, it's added whole. If a chunk does NOT
-    fit, it is TRUNCATED to fit the remaining space (header + signature +
-    docstring + as much of the code body as fits, marked with an
-    explicit "...truncated..." notice) rather than dropped entirely.
-
-    FIX (see project notes): the previous policy skipped any chunk whose
-    full size exceeded the *entire* CHUNK_TOKEN_BUDGET, even before any
-    other chunk had used any space. This made large but highly relevant
-    classes (e.g. a 7934-token Field class that is real ground truth for
-    several benchmark queries) structurally unreachable regardless of
-    retrieval ranking. Truncating instead of skipping means an oversized,
-    genuinely relevant chunk still contributes its citation-critical
-    header info and as much real code as space allows, rather than
-    contributing nothing.
-
-    A chunk is only fully skipped now if there is negligible space left
-    (less than MIN_TRUNCATED_CHUNK_TOKENS) to make truncation worthwhile.
+    first). Chunks that fit whole are added whole. Chunks that don't fit
+    are truncated to fit, capped at MAX_TRUNCATED_CHUNK_TOKENS so one
+    oversized chunk can't consume space that would otherwise fit several
+    smaller relevant chunks.
     """
     context_blocks: list[str] = []
     chunks_used: list[dict] = []
     running_tokens = 0
 
-    MIN_TRUNCATED_CHUNK_TOKENS = 150  # below this, truncation isn't useful
+    MIN_TRUNCATED_CHUNK_TOKENS = 150
 
     for chunk in chunks:
         remaining = CHUNK_TOKEN_BUDGET - running_tokens
@@ -129,7 +114,12 @@ def build_prompt(question: str, chunks: list[dict]) -> PromptResult:
             header += f'Docstring: "{chunk["docstring"]}"\n'
         header_tokens = _count_tokens(header)
 
-        code_budget_tokens = remaining - header_tokens - 30
+        # NEW: cap the truncated body at MAX_TRUNCATED_CHUNK_TOKENS,
+        # not just whatever happens to be "remaining" -- this is the fix.
+        code_budget_tokens = min(
+            remaining - header_tokens - 30,
+            MAX_TRUNCATED_CHUNK_TOKENS,
+        )
         if code_budget_tokens < MIN_TRUNCATED_CHUNK_TOKENS:
             logger.info(
                 "Skipping chunk %s -- not enough space even for a truncated body",
@@ -149,9 +139,9 @@ def build_prompt(question: str, chunks: list[dict]) -> PromptResult:
         block_tokens = _count_tokens(block)
 
         logger.info(
-            "Truncated oversized chunk %s: %d tokens -> %d tokens (kept header + %d/%d code tokens)",
+            "Truncated oversized chunk %s: %d tokens -> %d tokens (capped at %d code tokens)",
             chunk.get("node_id", "?"), header_tokens + len(code_tokens), block_tokens,
-            code_budget_tokens, len(code_tokens),
+            code_budget_tokens,
         )
 
         context_blocks.append(block)
