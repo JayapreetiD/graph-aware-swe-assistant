@@ -5,35 +5,35 @@
       "mean_precision_at_k": 0.1529,
       "mean_recall_at_k": 0.6471,
       "mrr": 0.5863,
-      "mean_latency_seconds": 0.1644
+      "mean_latency_seconds": 0.0521
     },
     "hybrid_hop1": {
       "n": 17,
       "mean_precision_at_k": 0.1216,
       "mean_recall_at_k": 0.7941,
       "mrr": 0.5863,
-      "mean_latency_seconds": 0.3175
+      "mean_latency_seconds": 0.1065
     },
     "hybrid_hop2": {
       "n": 17,
       "mean_precision_at_k": 0.1216,
       "mean_recall_at_k": 0.7941,
       "mrr": 0.5863,
-      "mean_latency_seconds": 0.2871
+      "mean_latency_seconds": 0.1084
     },
     "hybrid_hop3": {
       "n": 17,
       "mean_precision_at_k": 0.1216,
       "mean_recall_at_k": 0.7941,
       "mrr": 0.5863,
-      "mean_latency_seconds": 0.3312
+      "mean_latency_seconds": 0.1098
     },
     "semantic": {
       "n": 17,
       "mean_precision_at_k": 0.1529,
       "mean_recall_at_k": 0.6471,
       "mrr": 0.5863,
-      "mean_latency_seconds": 0.6579
+      "mean_latency_seconds": 0.5483
     }
   },
   "per_query": [
@@ -47,7 +47,7 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 8.7278,
+      "latency_seconds": 8.4956,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer"
       ]
@@ -62,7 +62,7 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.0672,
+      "latency_seconds": 0.0473,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer"
       ]
@@ -77,7 +77,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.1879,
+      "latency_seconds": 0.1371,
       "matched_ground_truth_ids": [
         "forms/forms.py::BaseForm.__init__",
         "forms/renderers.py::get_default_renderer"
@@ -93,7 +93,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.1183,
+      "latency_seconds": 0.0962,
       "matched_ground_truth_ids": [
         "forms/forms.py::BaseForm.__init__",
         "forms/renderers.py::get_default_renderer"
@@ -109,7 +109,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.1335,
+      "latency_seconds": 0.1133,
       "matched_ground_truth_ids": [
         "forms/forms.py::BaseForm.__init__",
         "forms/renderers.py::get_default_renderer"
@@ -125,7 +125,7 @@
       "precision_at_k": 0.2,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.0649,
+      "latency_seconds": 0.0521,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer",
         "forms/widgets.py::Widget._render"
@@ -141,7 +141,7 @@
       "precision_at_k": 0.2,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.0673,
+      "latency_seconds": 0.0535,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer",
         "forms/widgets.py::Widget._render"
@@ -157,7 +157,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.1223,
+      "latency_seconds": 0.1062,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer",
         "forms/widgets.py::Widget._render"
@@ -173,7 +173,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.1996,
+      "latency_seconds": 0.2014,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer",
         "forms/widgets.py::Widget._render"
@@ -189,7 +189,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.1074,
+      "latency_seconds": 0.1092,
       "matched_ground_truth_ids": [
         "forms/renderers.py::get_default_renderer",
         "forms/widgets.py::Widget._render"
@@ -205,7 +205,7 @@
       "precision_at_k": 0.0,
       "recall_at_k": 0.0,
       "reciprocal_rank": 0.0,
-      "latency_seconds": 0.0699,
+      "latency_seconds": 0.0571,
       "matched_ground_truth_ids": []
     },
     {
@@ -218,7 +218,7 @@
       "precision_at_k": 0.0,
       "recall_at_k": 0.0,
       "reciprocal_rank": 0.0,
-      "latency_seconds": 0.0676,
+      "latency_seconds": 0.061,
       "matched_ground_truth_ids": []
     },
     {
@@ -231,7 +231,7 @@
       "precision_at_k": 0.0,
       "recall_at_k": 0.0,
       "reciprocal_rank": 0.0,
-      "latency_seconds": 0.1055,
+      "latency_seconds": 0.0983,
       "matched_ground_truth_ids": []
     },
     {
@@ -244,7 +244,7 @@
       "precision_at_k": 0.0,
       "recall_at_k": 0.0,
       "reciprocal_rank": 0.0,
-      "latency_seconds": 0.1151,
+      "latency_seconds": 0.091,
       "matched_ground_truth_ids": []
     },
     {
@@ -257,7 +257,7 @@
       "precision_at_k": 0.0,
       "recall_at_k": 0.0,
       "reciprocal_rank": 0.0,
-      "latency_seconds": 0.1333,
+      "latency_seconds": 0.1025,
       "matched_ground_truth_ids": []
     },
     {
@@ -270,7 +270,7 @@
       "precision_at_k": 0.2,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.06,
+      "latency_seconds": 0.0535,
       "matched_ground_truth_ids": [
         "db/migrations/loader.py::MigrationLoader",
         "db/migrations/recorder.py::MigrationRecorder"
@@ -286,7 +286,7 @@
       "precision_at_k": 0.2,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.0645,
+      "latency_seconds": 0.0524,
       "matched_ground_truth_ids": [
         "db/migrations/loader.py::MigrationLoader",
         "db/migrations/recorder.py::MigrationRecorder"
@@ -302,7 +302,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.1213,
+      "latency_seconds": 0.0945,
       "matched_ground_truth_ids": [
         "db/migrations/loader.py::MigrationLoader",
         "db/migrations/recorder.py::MigrationRecorder"
@@ -318,7 +318,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.1246,
+      "latency_seconds": 0.0995,
       "matched_ground_truth_ids": [
         "db/migrations/loader.py::MigrationLoader",
         "db/migrations/recorder.py::MigrationRecorder"
@@ -334,7 +334,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.1322,
+      "latency_seconds": 0.0936,
       "matched_ground_truth_ids": [
         "db/migrations/loader.py::MigrationLoader",
         "db/migrations/recorder.py::MigrationRecorder"
@@ -350,7 +350,7 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.0766,
+      "latency_seconds": 0.0511,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InvalidMigrationPlan"
       ]
@@ -365,7 +365,7 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.0697,
+      "latency_seconds": 0.0521,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InvalidMigrationPlan"
       ]
@@ -380,7 +380,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.1307,
+      "latency_seconds": 0.0967,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InvalidMigrationPlan",
         "db/migrations/executor.py::MigrationExecutor.migrate"
@@ -396,7 +396,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.1299,
+      "latency_seconds": 0.0911,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InvalidMigrationPlan",
         "db/migrations/executor.py::MigrationExecutor.migrate"
@@ -412,7 +412,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.1385,
+      "latency_seconds": 0.0935,
       "matched_ground_truth_ids": [
         "db/migrations/exceptions.py::InvalidMigrationPlan",
         "db/migrations/executor.py::MigrationExecutor.migrate"
@@ -428,351 +428,351 @@
       "precision_at_k": 0.2,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
+      "latency_seconds": 0.049,
+      "matched_ground_truth_ids": [
+        "db/migrations/exceptions.py::InconsistentMigrationHistory",
+        "db/migrations/loader.py::MigrationLoader.check_consistent_history"
+      ]
+    },
+    {
+      "query_id": "dj06",
+      "mode": "hybrid",
+      "hop_depth": 0,
+      "category": "cross_file_1hop",
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.2,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "latency_seconds": 0.052,
+      "matched_ground_truth_ids": [
+        "db/migrations/exceptions.py::InconsistentMigrationHistory",
+        "db/migrations/loader.py::MigrationLoader.check_consistent_history"
+      ]
+    },
+    {
+      "query_id": "dj06",
+      "mode": "hybrid",
+      "hop_depth": 1,
+      "category": "cross_file_1hop",
+      "k_retrieved": 15,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1333,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "latency_seconds": 0.099,
+      "matched_ground_truth_ids": [
+        "db/migrations/exceptions.py::InconsistentMigrationHistory",
+        "db/migrations/loader.py::MigrationLoader.check_consistent_history"
+      ]
+    },
+    {
+      "query_id": "dj06",
+      "mode": "hybrid",
+      "hop_depth": 2,
+      "category": "cross_file_1hop",
+      "k_retrieved": 15,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1333,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "latency_seconds": 0.0904,
+      "matched_ground_truth_ids": [
+        "db/migrations/exceptions.py::InconsistentMigrationHistory",
+        "db/migrations/loader.py::MigrationLoader.check_consistent_history"
+      ]
+    },
+    {
+      "query_id": "dj06",
+      "mode": "hybrid",
+      "hop_depth": 3,
+      "category": "cross_file_1hop",
+      "k_retrieved": 15,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1333,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "latency_seconds": 0.1646,
+      "matched_ground_truth_ids": [
+        "db/migrations/exceptions.py::InconsistentMigrationHistory",
+        "db/migrations/loader.py::MigrationLoader.check_consistent_history"
+      ]
+    },
+    {
+      "query_id": "dj07",
+      "mode": "semantic",
+      "hop_depth": null,
+      "category": "cross_file_1hop",
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.1,
+      "latency_seconds": 0.0463,
+      "matched_ground_truth_ids": [
+        "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
+      ]
+    },
+    {
+      "query_id": "dj07",
+      "mode": "hybrid",
+      "hop_depth": 0,
+      "category": "cross_file_1hop",
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.1,
+      "latency_seconds": 0.0498,
+      "matched_ground_truth_ids": [
+        "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
+      ]
+    },
+    {
+      "query_id": "dj07",
+      "mode": "hybrid",
+      "hop_depth": 1,
+      "category": "cross_file_1hop",
+      "k_retrieved": 15,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.0667,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.1,
+      "latency_seconds": 0.0943,
+      "matched_ground_truth_ids": [
+        "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
+      ]
+    },
+    {
+      "query_id": "dj07",
+      "mode": "hybrid",
+      "hop_depth": 2,
+      "category": "cross_file_1hop",
+      "k_retrieved": 15,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.0667,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.1,
+      "latency_seconds": 0.0951,
+      "matched_ground_truth_ids": [
+        "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
+      ]
+    },
+    {
+      "query_id": "dj07",
+      "mode": "hybrid",
+      "hop_depth": 3,
+      "category": "cross_file_1hop",
+      "k_retrieved": 15,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.0667,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.1,
+      "latency_seconds": 0.0902,
+      "matched_ground_truth_ids": [
+        "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
+      ]
+    },
+    {
+      "query_id": "dj08",
+      "mode": "semantic",
+      "hop_depth": null,
+      "category": "same_file_inherit_shallow",
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 1.0,
+      "latency_seconds": 0.0498,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::URLField"
+      ]
+    },
+    {
+      "query_id": "dj08",
+      "mode": "hybrid",
+      "hop_depth": 0,
+      "category": "same_file_inherit_shallow",
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 1.0,
+      "latency_seconds": 0.0502,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::URLField"
+      ]
+    },
+    {
+      "query_id": "dj08",
+      "mode": "hybrid",
+      "hop_depth": 1,
+      "category": "same_file_inherit_shallow",
+      "k_retrieved": 15,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1333,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "latency_seconds": 0.092,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::CharField",
+        "forms/fields.py::URLField"
+      ]
+    },
+    {
+      "query_id": "dj08",
+      "mode": "hybrid",
+      "hop_depth": 2,
+      "category": "same_file_inherit_shallow",
+      "k_retrieved": 15,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1333,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "latency_seconds": 0.1206,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::CharField",
+        "forms/fields.py::URLField"
+      ]
+    },
+    {
+      "query_id": "dj08",
+      "mode": "hybrid",
+      "hop_depth": 3,
+      "category": "same_file_inherit_shallow",
+      "k_retrieved": 15,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1333,
+      "recall_at_k": 1.0,
+      "reciprocal_rank": 1.0,
+      "latency_seconds": 0.1072,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::CharField",
+        "forms/fields.py::URLField"
+      ]
+    },
+    {
+      "query_id": "dj09",
+      "mode": "semantic",
+      "hop_depth": null,
+      "category": "same_file_inherit_deep",
+      "k_retrieved": 10,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.2,
+      "recall_at_k": 0.6667,
+      "reciprocal_rank": 0.3333,
+      "latency_seconds": 0.0492,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::BooleanField",
+        "forms/fields.py::NullBooleanField"
+      ]
+    },
+    {
+      "query_id": "dj09",
+      "mode": "hybrid",
+      "hop_depth": 0,
+      "category": "same_file_inherit_deep",
+      "k_retrieved": 10,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.2,
+      "recall_at_k": 0.6667,
+      "reciprocal_rank": 0.3333,
+      "latency_seconds": 0.0521,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::BooleanField",
+        "forms/fields.py::NullBooleanField"
+      ]
+    },
+    {
+      "query_id": "dj09",
+      "mode": "hybrid",
+      "hop_depth": 1,
+      "category": "same_file_inherit_deep",
+      "k_retrieved": 15,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.1333,
+      "recall_at_k": 0.6667,
+      "reciprocal_rank": 0.3333,
+      "latency_seconds": 0.1097,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::BooleanField",
+        "forms/fields.py::NullBooleanField"
+      ]
+    },
+    {
+      "query_id": "dj09",
+      "mode": "hybrid",
+      "hop_depth": 2,
+      "category": "same_file_inherit_deep",
+      "k_retrieved": 15,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.1333,
+      "recall_at_k": 0.6667,
+      "reciprocal_rank": 0.3333,
+      "latency_seconds": 0.1702,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::BooleanField",
+        "forms/fields.py::NullBooleanField"
+      ]
+    },
+    {
+      "query_id": "dj09",
+      "mode": "hybrid",
+      "hop_depth": 3,
+      "category": "same_file_inherit_deep",
+      "k_retrieved": 15,
+      "ground_truth_count": 3,
+      "precision_at_k": 0.1333,
+      "recall_at_k": 0.6667,
+      "reciprocal_rank": 0.3333,
+      "latency_seconds": 0.0906,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::BooleanField",
+        "forms/fields.py::NullBooleanField"
+      ]
+    },
+    {
+      "query_id": "dj10",
+      "mode": "semantic",
+      "hop_depth": null,
+      "category": "same_file_inherit_deep",
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.1667,
+      "latency_seconds": 0.0481,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::DateField"
+      ]
+    },
+    {
+      "query_id": "dj10",
+      "mode": "hybrid",
+      "hop_depth": 0,
+      "category": "same_file_inherit_deep",
+      "k_retrieved": 10,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.1,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.1667,
+      "latency_seconds": 0.0513,
+      "matched_ground_truth_ids": [
+        "forms/fields.py::DateField"
+      ]
+    },
+    {
+      "query_id": "dj10",
+      "mode": "hybrid",
+      "hop_depth": 1,
+      "category": "same_file_inherit_deep",
+      "k_retrieved": 15,
+      "ground_truth_count": 2,
+      "precision_at_k": 0.0667,
+      "recall_at_k": 0.5,
+      "reciprocal_rank": 0.1667,
       "latency_seconds": 0.0831,
       "matched_ground_truth_ids": [
-        "db/migrations/exceptions.py::InconsistentMigrationHistory",
-        "db/migrations/loader.py::MigrationLoader.check_consistent_history"
-      ]
-    },
-    {
-      "query_id": "dj06",
-      "mode": "hybrid",
-      "hop_depth": 0,
-      "category": "cross_file_1hop",
-      "k_retrieved": 10,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.2,
-      "recall_at_k": 1.0,
-      "reciprocal_rank": 1.0,
-      "latency_seconds": 0.0846,
-      "matched_ground_truth_ids": [
-        "db/migrations/exceptions.py::InconsistentMigrationHistory",
-        "db/migrations/loader.py::MigrationLoader.check_consistent_history"
-      ]
-    },
-    {
-      "query_id": "dj06",
-      "mode": "hybrid",
-      "hop_depth": 1,
-      "category": "cross_file_1hop",
-      "k_retrieved": 15,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1333,
-      "recall_at_k": 1.0,
-      "reciprocal_rank": 1.0,
-      "latency_seconds": 0.1373,
-      "matched_ground_truth_ids": [
-        "db/migrations/exceptions.py::InconsistentMigrationHistory",
-        "db/migrations/loader.py::MigrationLoader.check_consistent_history"
-      ]
-    },
-    {
-      "query_id": "dj06",
-      "mode": "hybrid",
-      "hop_depth": 2,
-      "category": "cross_file_1hop",
-      "k_retrieved": 15,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1333,
-      "recall_at_k": 1.0,
-      "reciprocal_rank": 1.0,
-      "latency_seconds": 0.2504,
-      "matched_ground_truth_ids": [
-        "db/migrations/exceptions.py::InconsistentMigrationHistory",
-        "db/migrations/loader.py::MigrationLoader.check_consistent_history"
-      ]
-    },
-    {
-      "query_id": "dj06",
-      "mode": "hybrid",
-      "hop_depth": 3,
-      "category": "cross_file_1hop",
-      "k_retrieved": 15,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1333,
-      "recall_at_k": 1.0,
-      "reciprocal_rank": 1.0,
-      "latency_seconds": 0.4858,
-      "matched_ground_truth_ids": [
-        "db/migrations/exceptions.py::InconsistentMigrationHistory",
-        "db/migrations/loader.py::MigrationLoader.check_consistent_history"
-      ]
-    },
-    {
-      "query_id": "dj07",
-      "mode": "semantic",
-      "hop_depth": null,
-      "category": "cross_file_1hop",
-      "k_retrieved": 10,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 0.1,
-      "latency_seconds": 0.1502,
-      "matched_ground_truth_ids": [
-        "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
-      ]
-    },
-    {
-      "query_id": "dj07",
-      "mode": "hybrid",
-      "hop_depth": 0,
-      "category": "cross_file_1hop",
-      "k_retrieved": 10,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 0.1,
-      "latency_seconds": 0.1497,
-      "matched_ground_truth_ids": [
-        "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
-      ]
-    },
-    {
-      "query_id": "dj07",
-      "mode": "hybrid",
-      "hop_depth": 1,
-      "category": "cross_file_1hop",
-      "k_retrieved": 15,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.0667,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 0.1,
-      "latency_seconds": 0.3087,
-      "matched_ground_truth_ids": [
-        "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
-      ]
-    },
-    {
-      "query_id": "dj07",
-      "mode": "hybrid",
-      "hop_depth": 2,
-      "category": "cross_file_1hop",
-      "k_retrieved": 15,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.0667,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 0.1,
-      "latency_seconds": 0.3009,
-      "matched_ground_truth_ids": [
-        "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
-      ]
-    },
-    {
-      "query_id": "dj07",
-      "mode": "hybrid",
-      "hop_depth": 3,
-      "category": "cross_file_1hop",
-      "k_retrieved": 15,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.0667,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 0.1,
-      "latency_seconds": 0.3103,
-      "matched_ground_truth_ids": [
-        "db/backends/postgresql/base.py::DatabaseWrapper.get_connection_params"
-      ]
-    },
-    {
-      "query_id": "dj08",
-      "mode": "semantic",
-      "hop_depth": null,
-      "category": "same_file_inherit_shallow",
-      "k_retrieved": 10,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 1.0,
-      "latency_seconds": 0.1454,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::URLField"
-      ]
-    },
-    {
-      "query_id": "dj08",
-      "mode": "hybrid",
-      "hop_depth": 0,
-      "category": "same_file_inherit_shallow",
-      "k_retrieved": 10,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 1.0,
-      "latency_seconds": 0.1464,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::URLField"
-      ]
-    },
-    {
-      "query_id": "dj08",
-      "mode": "hybrid",
-      "hop_depth": 1,
-      "category": "same_file_inherit_shallow",
-      "k_retrieved": 15,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1333,
-      "recall_at_k": 1.0,
-      "reciprocal_rank": 1.0,
-      "latency_seconds": 0.2988,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::CharField",
-        "forms/fields.py::URLField"
-      ]
-    },
-    {
-      "query_id": "dj08",
-      "mode": "hybrid",
-      "hop_depth": 2,
-      "category": "same_file_inherit_shallow",
-      "k_retrieved": 15,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1333,
-      "recall_at_k": 1.0,
-      "reciprocal_rank": 1.0,
-      "latency_seconds": 0.3582,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::CharField",
-        "forms/fields.py::URLField"
-      ]
-    },
-    {
-      "query_id": "dj08",
-      "mode": "hybrid",
-      "hop_depth": 3,
-      "category": "same_file_inherit_shallow",
-      "k_retrieved": 15,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1333,
-      "recall_at_k": 1.0,
-      "reciprocal_rank": 1.0,
-      "latency_seconds": 0.3438,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::CharField",
-        "forms/fields.py::URLField"
-      ]
-    },
-    {
-      "query_id": "dj09",
-      "mode": "semantic",
-      "hop_depth": null,
-      "category": "same_file_inherit_deep",
-      "k_retrieved": 10,
-      "ground_truth_count": 3,
-      "precision_at_k": 0.2,
-      "recall_at_k": 0.6667,
-      "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.1433,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::BooleanField",
-        "forms/fields.py::NullBooleanField"
-      ]
-    },
-    {
-      "query_id": "dj09",
-      "mode": "hybrid",
-      "hop_depth": 0,
-      "category": "same_file_inherit_deep",
-      "k_retrieved": 10,
-      "ground_truth_count": 3,
-      "precision_at_k": 0.2,
-      "recall_at_k": 0.6667,
-      "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.1515,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::BooleanField",
-        "forms/fields.py::NullBooleanField"
-      ]
-    },
-    {
-      "query_id": "dj09",
-      "mode": "hybrid",
-      "hop_depth": 1,
-      "category": "same_file_inherit_deep",
-      "k_retrieved": 15,
-      "ground_truth_count": 3,
-      "precision_at_k": 0.1333,
-      "recall_at_k": 0.6667,
-      "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.3256,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::BooleanField",
-        "forms/fields.py::NullBooleanField"
-      ]
-    },
-    {
-      "query_id": "dj09",
-      "mode": "hybrid",
-      "hop_depth": 2,
-      "category": "same_file_inherit_deep",
-      "k_retrieved": 15,
-      "ground_truth_count": 3,
-      "precision_at_k": 0.1333,
-      "recall_at_k": 0.6667,
-      "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.404,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::BooleanField",
-        "forms/fields.py::NullBooleanField"
-      ]
-    },
-    {
-      "query_id": "dj09",
-      "mode": "hybrid",
-      "hop_depth": 3,
-      "category": "same_file_inherit_deep",
-      "k_retrieved": 15,
-      "ground_truth_count": 3,
-      "precision_at_k": 0.1333,
-      "recall_at_k": 0.6667,
-      "reciprocal_rank": 0.3333,
-      "latency_seconds": 0.3107,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::BooleanField",
-        "forms/fields.py::NullBooleanField"
-      ]
-    },
-    {
-      "query_id": "dj10",
-      "mode": "semantic",
-      "hop_depth": null,
-      "category": "same_file_inherit_deep",
-      "k_retrieved": 10,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 0.1667,
-      "latency_seconds": 0.1446,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::DateField"
-      ]
-    },
-    {
-      "query_id": "dj10",
-      "mode": "hybrid",
-      "hop_depth": 0,
-      "category": "same_file_inherit_deep",
-      "k_retrieved": 10,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.1,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 0.1667,
-      "latency_seconds": 0.1398,
-      "matched_ground_truth_ids": [
-        "forms/fields.py::DateField"
-      ]
-    },
-    {
-      "query_id": "dj10",
-      "mode": "hybrid",
-      "hop_depth": 1,
-      "category": "same_file_inherit_deep",
-      "k_retrieved": 15,
-      "ground_truth_count": 2,
-      "precision_at_k": 0.0667,
-      "recall_at_k": 0.5,
-      "reciprocal_rank": 0.1667,
-      "latency_seconds": 0.3173,
-      "matched_ground_truth_ids": [
         "forms/fields.py::DateField"
       ]
     },
@@ -786,7 +786,7 @@
       "precision_at_k": 0.0667,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.1667,
-      "latency_seconds": 0.3124,
+      "latency_seconds": 0.098,
       "matched_ground_truth_ids": [
         "forms/fields.py::DateField"
       ]
@@ -801,7 +801,7 @@
       "precision_at_k": 0.0667,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.1667,
-      "latency_seconds": 0.3486,
+      "latency_seconds": 0.0943,
       "matched_ground_truth_ids": [
         "forms/fields.py::DateField"
       ]
@@ -816,7 +816,7 @@
       "precision_at_k": 0.2,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.1563,
+      "latency_seconds": 0.0502,
       "matched_ground_truth_ids": [
         "forms/fields.py::ChoiceField",
         "forms/fields.py::TypedChoiceField"
@@ -832,7 +832,7 @@
       "precision_at_k": 0.2,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.1512,
+      "latency_seconds": 0.0515,
       "matched_ground_truth_ids": [
         "forms/fields.py::ChoiceField",
         "forms/fields.py::TypedChoiceField"
@@ -848,7 +848,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.3014,
+      "latency_seconds": 0.097,
       "matched_ground_truth_ids": [
         "forms/fields.py::ChoiceField",
         "forms/fields.py::TypedChoiceField"
@@ -864,7 +864,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.3481,
+      "latency_seconds": 0.099,
       "matched_ground_truth_ids": [
         "forms/fields.py::ChoiceField",
         "forms/fields.py::TypedChoiceField"
@@ -880,7 +880,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.6902,
+      "latency_seconds": 0.1032,
       "matched_ground_truth_ids": [
         "forms/fields.py::ChoiceField",
         "forms/fields.py::TypedChoiceField"
@@ -896,7 +896,7 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.2,
-      "latency_seconds": 0.4867,
+      "latency_seconds": 0.0526,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::BooleanField"
       ]
@@ -911,7 +911,7 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.2,
-      "latency_seconds": 0.7702,
+      "latency_seconds": 0.0506,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::BooleanField"
       ]
@@ -926,7 +926,7 @@
       "precision_at_k": 0.0667,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.2,
-      "latency_seconds": 0.9528,
+      "latency_seconds": 0.0933,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::BooleanField"
       ]
@@ -941,7 +941,7 @@
       "precision_at_k": 0.0667,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.2,
-      "latency_seconds": 0.6072,
+      "latency_seconds": 0.0941,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::BooleanField"
       ]
@@ -956,7 +956,7 @@
       "precision_at_k": 0.0667,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.2,
-      "latency_seconds": 0.5135,
+      "latency_seconds": 0.104,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::BooleanField"
       ]
@@ -971,7 +971,7 @@
       "precision_at_k": 0.2,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.2757,
+      "latency_seconds": 0.0519,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::DateField",
         "db/models/fields/__init__.py::DateTimeField"
@@ -987,7 +987,7 @@
       "precision_at_k": 0.2,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.2507,
+      "latency_seconds": 0.0492,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::DateField",
         "db/models/fields/__init__.py::DateTimeField"
@@ -1003,7 +1003,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.4587,
+      "latency_seconds": 0.0918,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::DateField",
         "db/models/fields/__init__.py::DateTimeField"
@@ -1019,7 +1019,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.3511,
+      "latency_seconds": 0.0921,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::DateField",
         "db/models/fields/__init__.py::DateTimeField"
@@ -1035,7 +1035,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 0.6667,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.5354,
+      "latency_seconds": 0.1754,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::DateField",
         "db/models/fields/__init__.py::DateTimeField"
@@ -1051,7 +1051,7 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.1675,
+      "latency_seconds": 0.0515,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::SmallAutoField"
       ]
@@ -1066,7 +1066,7 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.1882,
+      "latency_seconds": 0.0525,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::SmallAutoField"
       ]
@@ -1081,7 +1081,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.3078,
+      "latency_seconds": 0.086,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::AutoFieldMixin",
         "db/models/fields/__init__.py::SmallAutoField"
@@ -1097,7 +1097,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.3077,
+      "latency_seconds": 0.1041,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::AutoFieldMixin",
         "db/models/fields/__init__.py::SmallAutoField"
@@ -1113,7 +1113,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 0.5,
-      "latency_seconds": 0.3626,
+      "latency_seconds": 0.0959,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::AutoFieldMixin",
         "db/models/fields/__init__.py::SmallAutoField"
@@ -1129,7 +1129,7 @@
       "precision_at_k": 0.4,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.1527,
+      "latency_seconds": 0.0617,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::IntegerField",
         "db/models/fields/__init__.py::PositiveIntegerRelDbTypeMixin",
@@ -1147,7 +1147,7 @@
       "precision_at_k": 0.4,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.1502,
+      "latency_seconds": 0.059,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::IntegerField",
         "db/models/fields/__init__.py::PositiveIntegerRelDbTypeMixin",
@@ -1165,7 +1165,7 @@
       "precision_at_k": 0.2667,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.5147,
+      "latency_seconds": 0.1366,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::IntegerField",
         "db/models/fields/__init__.py::PositiveIntegerRelDbTypeMixin",
@@ -1183,7 +1183,7 @@
       "precision_at_k": 0.2667,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.3736,
+      "latency_seconds": 0.1094,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::IntegerField",
         "db/models/fields/__init__.py::PositiveIntegerRelDbTypeMixin",
@@ -1201,7 +1201,7 @@
       "precision_at_k": 0.2667,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.4323,
+      "latency_seconds": 0.1271,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::IntegerField",
         "db/models/fields/__init__.py::PositiveIntegerRelDbTypeMixin",
@@ -1219,7 +1219,7 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.1672,
+      "latency_seconds": 0.053,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CommaSeparatedIntegerField"
       ]
@@ -1234,7 +1234,7 @@
       "precision_at_k": 0.1,
       "recall_at_k": 0.5,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.162,
+      "latency_seconds": 0.0538,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CommaSeparatedIntegerField"
       ]
@@ -1249,7 +1249,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.5285,
+      "latency_seconds": 0.2009,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CharField",
         "db/models/fields/__init__.py::CommaSeparatedIntegerField"
@@ -1265,7 +1265,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.2992,
+      "latency_seconds": 0.1041,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CharField",
         "db/models/fields/__init__.py::CommaSeparatedIntegerField"
@@ -1281,7 +1281,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.3338,
+      "latency_seconds": 0.1047,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CharField",
         "db/models/fields/__init__.py::CommaSeparatedIntegerField"
@@ -1297,7 +1297,7 @@
       "precision_at_k": 0.2,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.1132,
+      "latency_seconds": 0.0485,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CharField",
         "db/models/fields/__init__.py::SlugField"
@@ -1313,7 +1313,7 @@
       "precision_at_k": 0.2,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.1147,
+      "latency_seconds": 0.0475,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CharField",
         "db/models/fields/__init__.py::SlugField"
@@ -1329,7 +1329,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.279,
+      "latency_seconds": 0.0933,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CharField",
         "db/models/fields/__init__.py::SlugField"
@@ -1345,7 +1345,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.2796,
+      "latency_seconds": 0.0866,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CharField",
         "db/models/fields/__init__.py::SlugField"
@@ -1361,7 +1361,7 @@
       "precision_at_k": 0.1333,
       "recall_at_k": 1.0,
       "reciprocal_rank": 1.0,
-      "latency_seconds": 0.3177,
+      "latency_seconds": 0.0971,
       "matched_ground_truth_ids": [
         "db/models/fields/__init__.py::CharField",
         "db/models/fields/__init__.py::SlugField"
